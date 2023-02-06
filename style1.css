@@ -123,7 +123,7 @@ a:hover {
 	
 	/* Splash */
 	#splash {
-		height: calc(100vh - 40px);
+		height: 100vh;
 	}
 
 	/* Triplet */
@@ -305,7 +305,7 @@ a:hover {
 /* Splash screen */
 #splash {
 	gap: 10px;
-	padding: 20px;
+	padding: 0 20px !important;
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
@@ -317,14 +317,13 @@ a:hover {
 #splash-image-container {
 	flex-shrink: 1;
 	width: 45%;
-	margin-bottom: 10vh;
+	margin-top: auto;
 }
 
 #splash-image {
 	max-height: calc(90vh - 90px);
 	max-width: 100%;
 	float: right;
-	border-radius: 10px;
 }
 
 #title-container {
@@ -337,7 +336,7 @@ h1 {
 }
 
 h2 {
-	font-weight: 400;
+	font-weight: 500;
 	margin-bottom: 5px;
 }
 
@@ -346,7 +345,7 @@ h2 {
 	display: flex;
 	justify-content: center;
 	padding: 20px;
-	align-items: center;
+	align-items: stretch;
 	color: var(--dark-main);
 	background-color: var(--light-main);
 	flex-wrap: wrap;
@@ -360,6 +359,10 @@ h2 {
 #triplet div {
 	padding: 20px;
 	vertical-align: middle;
+}
+
+#triplet div img {
+	max-width: 100%;
 }
 
 /* Work */
@@ -411,25 +414,41 @@ h2 {
 #footer {
 	height: 40px;
 	position: relative;
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
 	padding: 10px;
-	gap: 20px;
 	list-style-type: none;
 	font-size: 20px;
-	color: var(--magenta);
 	background-color: var(--dark-purple);
 	box-shadow: 0 0px 20px 0px var(--magenta);
+	text-align: center;
 }
 
 #footer li > a {
 	color: var(--light-main);
 }
 
+#footer li {
+	display: inline-block;
+	padding: 0 10px;
+	border-right: 2px solid var(--light-purple);
+	max-height: 100%;
+}
+
+#footer li:last-child {
+	vertical-align: bottom;
+}
+
+#footer img {
+	height: 20px;
+	display: inline;
+}
+
+#footer li:first-child {
+	border-left: 2px solid var(--light-purple);
+}
+
 #footer > div {
 	position: absolute;
-	bottom: 5px;;
+	bottom: 5px;
 	text-align: center;
 	width: calc(100% - 20px);
 	font-size: 16px;
