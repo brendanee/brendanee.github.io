@@ -209,7 +209,8 @@ a:hover {
 	}
 	
 	#nav li {
-		flex-basis: 10px;
+		height: 50px;
+		flex-grow: 0;
 	}
 	
 	#nav li:nth-child(4) {
@@ -238,13 +239,17 @@ a:hover {
 		border-radius: 50%;
 	}
 
+	#nav li:first-child {
+		margin-top: 40px;
+	}
+	
 	#nav:hover li:nth-child(4) {
 		left: 0;
 		transition: left 0.25s;
 	}
 	
 	
-	#nav li:last-child() {
+	#nav li:last-child {
 		flex-grow: 1;
 	}
 	
@@ -260,7 +265,7 @@ a:hover {
 	
 	
 	h2 {
-		font-size: 20px;
+		font-size: 35px;
 	}
 	
 	#splash {
@@ -363,6 +368,7 @@ h2 {
 
 #triplet div img {
 	max-width: 100%;
+	border-radius: 10px;
 }
 
 /* Work */
@@ -410,6 +416,12 @@ h2 {
 
 }
 
+/* Contact */
+#contact {
+	background-color: var(--light-purple);
+	color: var(--light-main)
+}
+
 /* Footer */
 #footer {
 	height: 40px;
@@ -428,7 +440,7 @@ h2 {
 
 #footer li {
 	display: inline-block;
-	padding: 0 10px;
+	padding: 0 5px;
 	border-right: 2px solid var(--light-purple);
 	max-height: 100%;
 }
@@ -452,4 +464,5 @@ h2 {
 	text-align: center;
 	width: calc(100% - 20px);
 	font-size: 16px;
+	color: var(--magenta)
 }
