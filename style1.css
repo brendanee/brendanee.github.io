@@ -44,8 +44,9 @@ a:hover {
 	--light-main: #ffebf0;
 	--dark-main: #131314;
 	--magenta: #b315cf;
-	--dark-purple: #25172b;
+	--dark-purple: #1a095e;
 	--light-purple: #4e36c2;
+	--deep-purple: #25172b;
 }
 
 /* @media querys */
@@ -271,7 +272,7 @@ a:hover {
 	#splash {
 		flex-wrap: wrap;
 		text-align: center;
-		min-height: calc(100vh - 140px);
+		min-height: 100vh;
 		background: var(--dark-main) !important;
 	}
 	
@@ -351,8 +352,8 @@ h2 {
 	justify-content: center;
 	padding: 20px;
 	align-items: stretch;
-	color: var(--dark-main);
-	background-color: var(--light-main);
+	color: var(--light-main);
+	background-color: var(--deep-purple);
 	flex-wrap: wrap;
 }
 
@@ -369,6 +370,7 @@ h2 {
 #triplet div img {
 	max-width: 100%;
 	border-radius: 10px;
+	margin-bottom: 5px;
 }
 
 /* Work */
