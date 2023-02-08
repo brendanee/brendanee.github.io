@@ -481,6 +481,15 @@ h2 {
 	height: 22px;
 	display: inline;
 	vertical-align: bottom;
+	background-color: transparent;
+	transition: background-color 0.25s;
+	border-radius: 50%;
+}
+
+#footer img:hover {
+	border-radius: 50%;
+	background-color: var(--light-purple);
+	transition: background-color 0.25s;
 }
 
 #footer li:first-child {
