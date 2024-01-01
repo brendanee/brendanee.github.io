@@ -1,66 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>Brendan's Portfolio</title>
-	<!--Favicon-->
 	<link rel="icon" href="./assets/favicon.ico">
-	<!--CSS-->
-	<link rel="stylesheet" href="./style1.css">
-	<!--Google Fonts-->
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Anek+Latin&family=Asap:wght@600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<ul id="nav">
-	<li></li>
-	<li><a href="#triplet">Work</a></li>
-	<li><a href="#splash"><img src="./assets/flower.jpg" alt="Pink flowers against a blue background." id="logo"></a></li>
-	<li><a href="#work">Photos</a></li>
-	<li></li>
-</ul>
-<div id="content">
+<main>
 	<div id="splash">	
-		<h1 id="title-container">Hello, I'm Brendan!</h1>
-		<div id="splash-image-container">
-			<img id="splash-image" src="./assets/me.png" alt="A teenage boy in a blue hoodie.">
-		</div>
-		<a href="#triplet"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2aWV3Qm94PSIwIDAgNTAwIDI2MCIgd2lkdGg9IjUwMCIgaGVpZ2h0PSIyNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6Yng9Imh0dHBzOi8vYm94eS1zdmcuY29tIj4KICA8cGF0aCBkPSJNIDI3Ny41NjMgMTM5LjgyNSBRIDMzNC44OTYgODIuNDkyIDMzNC44OTYgMTM5LjgyNSBMIDMzNC44OTYgNDA3LjM3OSBRIDMzNC44OTYgNDY0LjcxMiAyNzcuNTYzIDQ2NC43MTIgTCAxMC4wMDkgNDY0LjcxMiBRIC00Ny4zMjQgNDY0LjcxMiAxMC4wMDkgNDA3LjM3OSBaIiBzdHlsZT0iZmlsbDogcmdiKDE3OSwgMjEsIDIwNyk7IiB0cmFuc2Zvcm09Im1hdHJpeCgtMC43MDcxMDcsIDAuNzA3MTA3LCAwLjcwNzEwNywgMC43MDcxMDcsIDE1Ni45NTM1NjgsIC0yODkuMzQzNTk3KSIgYng6c2hhcGU9InRyaWFuZ2xlIC00Ny4zMjQgODIuNDkyIDM4Mi4yMiAzODIuMjIgMSAwLjE1IDFAMWY1NDEyOTIiLz4KPC9zdmc+" alt=""></a>
+		<h1 id="tagline">Hello, I'm Brendan!</h1>
+		<img id="image" src="https://placehold.co/100x100" alt="Placeholder">
 	</div>
-	<div id="triplet">
-		<h1>My Hobbies</h1>
-		<div><h2>Coding</h2><img src="./assets/code.jpg" alt="A computer screen showing HTML code.">The website you're currently viewing is 100% coded by me.</div>
-		<div><h2>Photography</h2><img src="./assets/phone.jpg" alt="A closeup of a phone camera on a computer keyboard.">It's quite fun to document the many sights of the world!</div>
-		<div><h2>Engineering</h2><img src="./assets/lego.jpg" alt="Many colorful LEGO bricks">Why have many bricks when you could have many buildings.</div>
-	</div>
-	<div id="work">
-		<h1>My Photos</h1>
-		<div id="gallery-wrapper">
-			<img class="gallery" src="./assets/photo1.jpg" alt="">
-			<img class="gallery" src="./assets/photo2.jpg" alt="">
-			<img class="gallery" src="./assets/photo3.jpg" alt="">
-			<img class="gallery" src="./assets/photo4.jpg" alt="">
-			<img class="gallery" src="./assets/photo5.jpg" alt="">
-			<img class="gallery" src="./assets/photo6.jpg" alt="">
-			<img class="gallery" src="./assets/photo7.jpg" alt="">
-			<img class="gallery" src="./assets/photo8.jpg" alt="">
-			<img class="gallery" src="./assets/photo9.jpg" alt="">
-			<img class="gallery" src="./assets/photo10.png" alt="">
-			<img class="gallery" src="./assets/photo11.jpg" alt="">
-			<img class="gallery" src="./assets/photo12.jpg" alt="">
-			<img class="gallery" src="./assets/photo13.png" alt="">
-		</div>
-		<div id="more" onclick="expand();"><br>See More</div>
-	</div>
-	<ul id="footer">
-		<li><a target="_self" href="#splash">Top</a></li>
-		<li><a target="_self" href="#triplet">Work</a></li>
-		<li><a target="_self" href="#work">Photos</a></li>
-		<li>Contact: <a target="_self" href="mailto:eebre@tarriers.org">eebre@tarriers.org</a></li>
-		<li><a href="https://github.com/brendanee/brendanee.github.io" target="_blank"><img src="./assets/github.svg" alt="The GitHub logo"></a></li>
-		<div>© Brendan Ee 2023, All Rights Reserved.</div>
-	</ul>
-</div>
-<script src="main.js"></script>
+</main>
+<script src="./essential.js"></script>
+<script src="./main.js"></script>
 </body>
 </html>

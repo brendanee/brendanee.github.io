@@ -1,0 +1,7 @@
+# I, for one, am hesitant in welcoming our new AI overlords
+User-agent: GPTBot
+Disallow: /
+
+# Don't allow acess to 404 page
+User-agent: *
+Disallow: /404.html

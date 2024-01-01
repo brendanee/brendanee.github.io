@@ -1,0 +1,6 @@
+@import url(./reset.css);
+@import url('https://fonts.googleapis.com/css2?family=Asap:wght@600');
+
+main {
+  min-height: calc(100vh - 120px - 40px);
+}
