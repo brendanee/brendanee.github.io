@@ -1,11 +1,12 @@
 let headerNode = document.createElement('header');
 headerNode.innerHTML =
 `
-	<a href="#">Lego</a>
-	<a href="#">Code</a>
-	<a id="logo" href="https://brendan.ee"><img src="./assets/logo.webp" alt="Bright pink flowers against a light-blue background"></a>
-	<a href="#">Photos</a>
-	<a href="#">About</a>
+<div id="shadow-cover"></div>
+<a href="#">Lego</a>
+<a href="#">Code</a>
+<a id="flower" href="https://brendan.ee"><img src="./assets/flower.webp" alt="Bright pink flowers against a light-blue background"></a>
+<a href="#">Photos</a>
+<a href="#">About</a>
 `;
 let footerNode = document.createElement('footer');
 footerNode.innerHTML =
