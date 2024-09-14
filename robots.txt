@@ -2,6 +2,8 @@
 User-agent: GPTBot
 Disallow: /
 
-# Don't allow acess to 404 page
+# Don't allow acess to 404 page or my random code stuff
 User-agent: *
 Disallow: /404.html
+Disallow: /code
+Disallow: /code/

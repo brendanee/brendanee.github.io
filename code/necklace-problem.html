@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>Brendan's Necklace Problem Solver</title>
+	<link rel="icon" href="../assets/favicon.ico">
+	<link rel="stylesheet" href="../reset.css">
+</head>
+<body>
+<main>
+  <h1>Brendan's Necklace Problem Solver</h1>
+  <p>I couldn't figure it out in Java, and needed to procrastinate studying for math, so now I have made this!</p>
+  <label for="first">First Number:</label>
+  <input onkeyup="findNecklace(document.getElementById('first').value, document.getElementById('second').value)" type="text" name="first" id="first" value="1">
+  <label for="second">Second Number:</label>
+  <input onkeyup="findNecklace(document.getElementById('first').value, document.getElementById('second').value)" type="text" name="second" id="second" value="8">
+  <p id="output"></p>
+  <p style="margin-top: 100px;">Code: (does not output live, this is just a display of it. You can also just do view source.)</p>
+  <textarea name="code-display" id="code-display"></textarea>
+</main>
+<style>
+main {
+  background: linear-gradient(135deg, rgb(111,0,110) 0%, rgb(26, 9, 94) 70%, rgb(0,58,111) 100%);
+  height: 100vh;
+  text-align: center;
+  color: white;
+}
+
+h1 {
+  font-size: 80px;
+  padding: 20px;
+}
+
+p {
+  font-size: 20px;
+  line-height: 1.2em;
+  margin: 5px;
+}
+
+input {
+  border: 2px solid var(--magenta);
+  padding: 5px;
+  margin: 30px 10px 10px 10px;
+  font-size: 24px;
+  border-radius: 5px;
+  height: 40px;
+  width: 50px;
+  background-color: var(--off-purple);
+  color: white;
+}
+
+label, #output {
+  font-size: 24px;
+}
+
+#code-display {
+  width: 60%;
+  height: 300px;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: var(--off-purple);
+  font-size: 18px;
+  color: white;
+}
+</style>
+<script id="code">
+function findNecklace(first, second) {
+  // Convert inputs to numbers from text
+  first = parseInt(first);
+  second = parseInt(second);
+
+  // If the number is valid and is between 0-9
+  if (Number.isInteger(first) && Number.isInteger(second) && first > -1 && second > -1 && first < 10 && second < 10) {
+    // Init necklace array with starting values
+    let necklace = [first, second];
+
+    do {
+      // Add the last and second to last numbers of the array together, mod 10 for single digit, then add to end of array
+      necklace.push((necklace[necklace.length - 2] + necklace[necklace.length - 1]) % 10);
+    // Do this until the last two numbers of the array match the first and second
+    } while (necklace[necklace.length - 2] !== first || necklace[necklace.length - 1] !== second);
+    
+    try {
+      // Output array with space seperator, and its length minus two to not found the two initial
+      document.getElementById('output').innerHTML = `${necklace.join(" ")}<br>${necklace.length} steps to close the necklace!`;
+    } catch (error) {
+      // If output fails, must not be on website
+      console.warn('Not on the website, so it must have been blocked :(');
+    }
+    // Also output to console
+    console.log(`${necklace.join(" ")}\n${necklace.length - 2} steps to close the necklace!`);
+  } else {
+    // If input vaidation fails, output error
+    try {
+      document.getElementById('output').innerHTML = "Not a valid whole number between 0 and 9!";
+    } catch (error) {
+      // Same logic as above
+      console.warn('Not on the website, so it must have been blocked :(');
+    }
+    console.log('Not a valid whole number between 0 and 9!');
+  }
+}
+
+// Run once, other code auto re-runs on user input (if website is blocked, change these numbers to test values)
+findNecklace(1,8);
+</script>
+<script>document.getElementById('code-display').value = document.getElementById('code').innerText;</script>
+</body>
+</html>
