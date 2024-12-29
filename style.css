@@ -13,10 +13,10 @@ header {
 }
 
 #shadow-cover {
+  background-color: light-dark(white, var(--off-black));
   position: absolute;
   top: -100px;
   width: 100%;
-  background-color: white;
   height: 100px;
 }
 
@@ -27,7 +27,7 @@ header a {
   height: 30px;
   margin-top: -10px;
   font-size: 24px;
-  color: black;
+  color: light-dark(black, white);
   font-weight: 500;
   text-decoration: none;
   text-align: center;
@@ -36,7 +36,7 @@ header a {
 }
 
 header a:hover {
-  color: var(--magenta);
+  color: light-dark(var(--magenta), var(--pink));
 }
 
 header a::before, header a::after {
@@ -46,7 +46,7 @@ header a::before, header a::after {
   width: 10px;
   height: 10px;
   opacity: 0;
-  border: 2px var(--magenta);
+  border: 2px light-dark(var(--magenta), var(--pink));
   transform: scale(1.3);
   transition: transform 0.1s, opacity 0.1s;
 }
@@ -78,7 +78,7 @@ header #flower img {
   width: 70px;
   display: block;
   border-radius: 35px;
-  outline: 5px solid white;
+  outline: 5px solid light-dark(white, var(--off-black));
   transition: filter 0.1s;
 }
 
@@ -110,7 +110,7 @@ header::after {
   height: 70px;
   margin-top: 0;
   border-radius: 40px;
-  box-shadow: 0 10px 35px 0 var(--blue);
+  box-shadow: 0 10px 35px 0 light-dark(var(--blue), var(--magenta));
   z-index: -1;
   clip-path: rect(50% 150% 150% -50%);
 }
@@ -122,7 +122,7 @@ header::before {
   width: 100%;
   z-index: -1;
   height: 40px;
-  box-shadow: -50vw 5px 20px 0 var(--pink), 50vw 5px 20px 0 var(--orange);
+  box-shadow: -50vw 5px 20px 0 light-dark(var(--pink), var(--dark-blue)), 50vw 5px 20px 0 light-dark(var(--orange), var(--dark-blue));
   backdrop-filter: blur(15px);
 }
 
@@ -136,7 +136,7 @@ footer {
   padding: 10px;
   flex-wrap: wrap;
   position: relative;
-  background: var(--off-black);
+  background: light-dark(var(--off-black), black);
   bottom: 0;
 }
 
@@ -193,4 +193,9 @@ main {
   width: 200px;
   margin: 0 auto;
   display: block;
+}
+
+main {
+  color: light-dark(black, white);
+  background-color: light-dark(white, --off-black);
 }
