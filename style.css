@@ -123,7 +123,7 @@ header::before {
   z-index: -1;
   height: 40px;
   box-shadow: -50vw 5px 20px 0 light-dark(var(--pink), var(--dark-blue)), 50vw 5px 20px 0 light-dark(var(--orange), var(--dark-blue));
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
 }
 
 footer {
