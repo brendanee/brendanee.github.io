@@ -123,7 +123,11 @@ header::before {
   z-index: -1;
   height: 40px;
   box-shadow: -50vw 5px 20px 0 light-dark(var(--pink), var(--dark-blue)), 50vw 5px 20px 0 light-dark(var(--orange), var(--dark-blue));
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
+  /* light-dark doesn't work ig */
+  @media (prefers-color-scheme: dark) {
+    backdrop-filter: blur(15px) brightness(50%);
+  }
 }
 
 footer {
@@ -197,5 +201,5 @@ main {
 
 main {
   color: light-dark(black, white);
-  background-color: light-dark(white, --off-black);
+  background-color: light-dark(white, var(--off-black));
 }
