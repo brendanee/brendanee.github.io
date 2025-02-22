@@ -1,0 +1,23 @@
+
+@media (min-width: 500px) {
+  #logo {
+    width: 200px;
+    margin: 40px auto 20px auto;
+    display: block;
+  }
+}
+
+@media (max-width: 499px) {
+  #logo {
+    width: 50%;
+    margin: 40px auto 40px auto;
+    display: block;
+  }
+}
+
+#tagline {
+  font-size: 30px;
+  font-family: Asap, sans-serif;
+  text-align: center;
+  width: 100%;
+}

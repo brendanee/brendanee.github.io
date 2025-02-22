@@ -6,6 +6,7 @@
 */
 
 @import url("https://fonts.googleapis.com/css2?family=Anek+Latin");
+@import url('https://fonts.googleapis.com/css2?family=Asap:wght@600&display=swap');
 
 :root {
 	color-scheme: light dark;
@@ -50,6 +51,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	background-color: light-dark(white, var(--off-black));
 }
 ol, ul {
 	list-style: none;
