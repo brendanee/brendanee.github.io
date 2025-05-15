@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
+html {
+  text-align: center;
+  font-family: Verdana, sans-serif;
+  font-size: 14px;
+  --green: #0a5640;
+}
+
+
+h1 {
+  padding: 20px;
+  text-align: center;
+  font-size: 70px;
+  font-family: Montserrat, sans-serif;
+  color: var(--green);
+}
+
+
+#choices {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.isRanked, .isNotRanked, .cannotSelect {
+  flex-basis: 300px;
+  padding: 20px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: 2px solid var(--green);
+  margin: 20px;
+  cursor: pointer;
+}
+
+.rank {
+  width: 50px;
+  height: 50px;
+  font-size: 40px;
+  font-family: Montserrat, sans-serif;
+  float: left;
+}
+
+.isNotRanked .rank {
+  border: 2px dashed grey;
+}
+
+.isRanked .rank {
+  border: 2px solid var(--green);
+  background-color: var(--green);
+  color: white;
+}
+
+.cannotSelect {
+  border-color: grey;
+  color: grey;
+  text-decoration: line-through;
+}
+
+.cannotSelect .rank {
+  border: 2px solid grey;
+}
