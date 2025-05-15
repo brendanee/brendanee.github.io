@@ -3,6 +3,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src *; frame-src https://accounts.google.com/gsi/; connect-src https://accounts.google.com/gsi/;">
+	<meta http-equiv="Cross-Origin-Opener-Policy" content="unsafe-none">
 	<title>CWA Middle School Activity Sign-Up</title>
 	<link rel="icon" href="./assets/favicon.ico">
 	<link rel="stylesheet" href="./activity.css">
@@ -10,9 +12,26 @@
 <body>
 <main>
 	<h1>CWA Middle School Activity Sign-Up</h1>
-	<p>Rank you <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken.</p>
+	<div id="g_id_onload"
+     data-client_id="807252082407-7q7gq58coc2smgcjs1475ob9b4jce0v6.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-callback="loginCallback()"
+     data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="signin_with"
+     data-size="large"
+     data-logo_alignment="left">
+</div>
+	<p>Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken.</p>
 	<div id="choices"></div>
 </main>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <script src="./activity.js"></script>
 </body>
 </html>

@@ -58,12 +58,16 @@ function drawActivities() {
         break;
     }
 
+    let ele = document.createElement('div');
     if (e.grades.includes(myGrade)) {
-      let ele = `<div onclick="setRank(${i})" class="${e.rank === null ? "isNotRanked" : "isRanked"}"><div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}</div>`;
-      document.getElementById("choices").innerHTML = ele + document.getElementById("choices").innerHTML;
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}`;
+      ele.className = e.rank === null ? "isNotRanked" : "isRanked";
+      ele.addEventListener('click', () => setRank(i), false);
+      document.getElementById("choices").prepend(ele);
     } else {
-      let ele = `<div class="cannotSelect"><div class="rank"></div>${e.name}<br>${wordGrade}</div>`;
-      document.getElementById("choices").innerHTML += ele;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}`;
+      ele.className = 'cannotSelect';
+      document.getElementById("choices").append(ele);
     }
   });
 }
@@ -86,6 +90,8 @@ function setRank(index) {
   }
   drawActivities();
 }
+
+
 
 // Init call
 drawActivities();
