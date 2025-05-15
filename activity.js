@@ -40,6 +40,7 @@ let activityList = [
     rank: null,
   },
 ];
+// Testing only
 let myGrade = 6;
 
 function drawActivities() {
@@ -96,9 +97,31 @@ function loginCallback(response) {
   /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
   const decoded = decodeJwtResponse(response.credential);
   
-  document.getElementById("message").innerHTML = `Welcome, ${decoded.name}!<br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
-  /* Show class selector */
-  document.getElementById("choices").style.display = 'flex';
+  handleLogin(decoded);
+}
+
+function handleLogin(decoded) {
+  if (decoded.exp < Date.now) {
+    // Token expired
+    localStorage.removeItem('JWTToken');
+  } else {
+    // User logged in
+    localStorage.setItem('JWTToken', JSON.stringify(decoded));
+
+    /* Show class selector */
+    document.getElementById("google-wrapper").style.display = 'none';
+    // User is an student
+    if (decoded.hd === "tarriers.org") {
+      drawActivities();
+      document.getElementById("message").innerHTML = `Welcome, ${decoded.name}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+      document.getElementById('logout').addEventListener('click', logout, false);
+    }
+    // User is an admin
+    if (decoded.hd === "charleswright.org" || decoded.email === "brendanee314@gmail.com") {
+      document.getElementById("message").innerHTML = `Welcome, ${decoded.name}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
+      document.getElementById('logout').addEventListener('click', logout, false);
+    } 
+  }
 }
 
 // Shamelessly stolen from Google, all rights to them or whatever
@@ -112,8 +135,15 @@ function decodeJwtResponse(token) {
   return JSON.parse(jsonPayload);
 }
 
+function logout() {
+  localStorage.removeItem('JWTToken');
+  location.reload();
+}
+
 // Needed as loginCallback, which Google calls, needs to be a global fucntion or something idk
 window.loginCallback = loginCallback;
 
-// Init call
-drawActivities();
+
+if (localStorage.getItem('JWTToken') !== null) {
+  handleLogin(JSON.parse(localStorage.getItem('JWTToken')));
+}

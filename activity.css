@@ -23,8 +23,7 @@ h1 {
 }
 
 #choices {
-  /* Hidden to start */
-  display: none;
+  display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -65,4 +64,16 @@ h1 {
 
 .cannotSelect .rank {
   border: 2px solid grey;
+}
+
+#logout {
+  text-decoration: underline;
+  color: var(--green);
+  cursor: pointer;
+}
+
+img {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
 }
