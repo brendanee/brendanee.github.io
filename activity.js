@@ -3,41 +3,57 @@ let activityList = [
     name: "Cool Kid Club",
     grades: [5, 6, 7, 8],
     rank: null,
+    filledSpots: 5,
+    totalSpots: 20,
   },
   {
     name: "Lorem Ipsum Club",
     grades: [7, 8],
     rank: null,
+    filledSpots: 5,
+    totalSpots: 10,
   },
   {
     name: "Fifth Grade Only Club",
     grades: [5],
     rank: null,
+    filledSpots: 5,
+    totalSpots: 20,
   },
   {
     name: "Crumbl Cookie Club",
     grades: [5, 6, 7, 8],
     rank: null,
+    filledSpots: 18,
+    totalSpots: 20,
   },
   {
     name: "Another Club",
     grades: [5, 6, 7, 8],
     rank: null,
+    filledSpots: 5,
+    totalSpots: 20,
   },
   {
     name: "A Third Club",
-    grades: [7],
+    grades: [6, 7],
     rank: null,
+    filledSpots: 15,
+    totalSpots: 20,
   },
   {
     name: "Qwertyuiop Club",
     grades: [6, 7, 8],
     rank: null,
+    filledSpots: 5,
+    totalSpots: 20,
   },
   {
     name: "Asdf Club",
     grades: [5, 6, 7, 8],
     rank: null,
+    filledSpots: 17,
+    totalSpots: 17,
   },
 ];
 // Testing only
@@ -60,13 +76,13 @@ function drawActivities() {
     }
 
     let ele = document.createElement('div');
-    if (e.grades.includes(myGrade)) {
-      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}`;
+    if (e.grades.includes(myGrade) && e.filledSpots !== e.totalSpots) {
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spots left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
       document.getElementById("choices").prepend(ele);
     } else {
-      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}`;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spots left`;
       ele.className = 'cannotSelect';
       document.getElementById("choices").append(ele);
     }
@@ -120,16 +136,16 @@ function loginCallback(response) {
   /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
   const decoded = decodeJwtResponse(response.credential);
   
-  handleLogin(decoded);
+  handleLogin(decoded, response.credential);
 }
 
-function handleLogin(decoded) {
+function handleLogin(decoded, jwt) {
   if (decoded.exp < Date.now) {
     // Token expired
     localStorage.removeItem('JWTToken');
   } else {
     // User logged in
-    localStorage.setItem('JWTToken', JSON.stringify(decoded));
+    localStorage.setItem('JWTToken', jwt);
 
     /* Show class selector */
     document.getElementById("google-wrapper").style.display = 'none';
@@ -169,5 +185,5 @@ window.loginCallback = loginCallback;
 
 
 if (localStorage.getItem('JWTToken') !== null) {
-  handleLogin(JSON.parse(localStorage.getItem('JWTToken')));
+  handleLogin(decodeJwtResponse(localStorage.getItem('JWTToken')), localStorage.getItem('JWTToken'));
 }
