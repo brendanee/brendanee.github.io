@@ -91,7 +91,26 @@ function setRank(index) {
   drawActivities();
 }
 
+// After Google login flow
+function loginCallback(response) {
+  /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
+  const decoded = decodeJwtResponse(response.credential);
+  console.log(decoded);
+}
 
+// Shamelessly stolen from Google
+function decodeJwtResponse(token) {
+  let base64Url = token.split('.')[1];
+  let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
+// Needed as loginCallback, which Google calls, needs to be a global fucntion or something idk
+window.loginCallback = loginCallback;
 
 // Init call
 drawActivities();
