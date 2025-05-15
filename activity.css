@@ -3,7 +3,7 @@
 html {
   text-align: center;
   font-family: Verdana, sans-serif;
-  font-size: 14px;
+  font-size: 18px;
   --green: #0a5640;
 }
 
@@ -16,9 +16,15 @@ h1 {
   color: var(--green);
 }
 
+#google-wrapper {
+  margin: auto;
+  /* Magic number */
+  width: 250px;
+}
 
 #choices {
-  display: flex;
+  /* Hidden to start */
+  display: none;
   justify-content: center;
   flex-wrap: wrap;
 }

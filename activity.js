@@ -95,10 +95,13 @@ function setRank(index) {
 function loginCallback(response) {
   /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
   const decoded = decodeJwtResponse(response.credential);
-  console.log(decoded);
+  
+  document.getElementById("message").innerHTML = `Welcome, ${decoded.name}!<br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+  /* Show class selector */
+  document.getElementById("choices").style.display = 'flex';
 }
 
-// Shamelessly stolen from Google
+// Shamelessly stolen from Google, all rights to them or whatever
 function decodeJwtResponse(token) {
   let base64Url = token.split('.')[1];
   let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

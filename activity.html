@@ -12,24 +12,29 @@
 <body>
 <main>
 	<h1>CWA Middle School Activity Sign-Up</h1>
-	<div id="g_id_onload"
-     data-client_id="807252082407-7q7gq58coc2smgcjs1475ob9b4jce0v6.apps.googleusercontent.com"
-     data-context="signin"
-     data-ux_mode="popup"
-     data-callback="loginCallback"
-     data-auto_prompt="false">
-</div>
+     
+     <div id="google-wrapper">
+          <div id="g_id_onload"
+               data-client_id="807252082407-7q7gq58coc2smgcjs1475ob9b4jce0v6.apps.googleusercontent.com"
+               data-context="signin"
+               data-ux_mode="popup"
+               data-callback="loginCallback"
+               data-auto_prompt="false">
+          </div>
+          <div class="g_id_signin"
+               data-type="standard"
+               data-shape="rectangular"
+               data-theme="outline"
+               data-text="signin_with"
+               data-size="large"
+               data-logo_alignment="left">
+          </div>
+     </div>
 
-<div class="g_id_signin"
-     data-type="standard"
-     data-shape="rectangular"
-     data-theme="outline"
-     data-text="signin_with"
-     data-size="large"
-     data-logo_alignment="left">
-</div>
-	<p>Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken.</p>
+	<p id="message">Please sign in with your school Google Account to continue!</p>
 	<div id="choices"></div>
+
+     <img style="margin-top: 100px" height="70px" src="./Green CWA Logo.jpg" alt="The Charles Wright Academy Logo">
 </main>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script src="./activity.js"></script>
