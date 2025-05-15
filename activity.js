@@ -73,6 +73,29 @@ function drawActivities() {
   });
 }
 
+function drawAdmin() {
+  document.getElementById("admin").innerHTML = "";
+  activityList.forEach((e, i) => {
+    let wordGrade = "";
+    switch (e.grades.length) {
+      case 1:
+        wordGrade = e.grades + "th Grade Only";
+        break;
+      case 4:
+        wordGrade = "All Grades";
+        break;
+      default:
+        wordGrade = "Grades " + e.grades;
+        break;
+    }
+
+    let ele = document.createElement('div');
+    ele.className = 'adminChoice';
+    ele.innerHTML = `${e.name} - ${wordGrade}<div class="studentList"><i>NO students sgined up</i></div>`;
+    document.getElementById('admin').append(ele);
+  });
+}
+
 function setRank(index) {
   let cur = activityList[index];
 
@@ -118,6 +141,7 @@ function handleLogin(decoded) {
     }
     // User is an admin
     if (decoded.hd === "charleswright.org" || decoded.email === "brendanee314@gmail.com") {
+      drawAdmin();
       document.getElementById("message").innerHTML = `Welcome, ${decoded.name}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
       document.getElementById('logout').addEventListener('click', logout, false);
     } 

@@ -77,3 +77,15 @@ img {
   bottom: 10px;
   right: 10px;
 }
+
+.adminChoice {
+  padding: 20px;
+  border: 2px solid var(--green);
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+#admin {
+  columns: 2;
+  padding: 20px;
+}
