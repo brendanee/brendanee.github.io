@@ -5,6 +5,7 @@ html {
   font-family: Verdana, sans-serif;
   font-size: 18px;
   --green: #0a5640;
+  --light-green: rgb(157, 223, 79);
 }
 
 
@@ -17,9 +18,9 @@ h1 {
 }
 
 #google-wrapper {
-  margin: auto;
+  float: right;
   /* Magic number */
-  width: 250px;
+  width: 227px;
 }
 
 #student {
@@ -66,12 +67,6 @@ h1 {
   border: 2px solid grey;
 }
 
-#logout {
-  text-decoration: underline;
-  color: var(--green);
-  cursor: pointer;
-}
-
 img {
   position: fixed;
   bottom: 10px;
@@ -99,4 +94,36 @@ img {
   font-family: Montserrat, sans-serif;
   margin: auto;
   border: none;
+}
+
+#logout {
+  padding: 8px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  background-color: var(--green);
+  color: white;
+  font-family: Montserrat, sans-serif;
+  margin: auto;
+  border: none;
+  /*Assuming no log in*/
+  display: none;
+  cursor: pointer;
+  float: right;
+}
+
+header {
+  padding: 5px 10px;
+  width: calc(100% - 20px);
+  height: 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-bottom: 3px solid var(--light-green);
+}
+
+#header-message {
+  float: left;
+  height: 40px;
+  line-height: 40px;
 }

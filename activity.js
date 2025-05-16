@@ -31,7 +31,7 @@ let activityList = [
     name: "Another Club",
     grades: [5, 6, 7, 8],
     rank: null,
-    filledSpots: 5,
+    filledSpots: 19,
     totalSpots: 20,
   },
   {
@@ -77,12 +77,12 @@ function drawActivities() {
 
     let ele = document.createElement('div');
     if (e.grades.includes(myGrade) && e.filledSpots !== e.totalSpots) {
-      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spots left`;
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
       document.getElementById("student").prepend(ele);
     } else {
-      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spots left`;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
       ele.className = 'cannotSelect';
       document.getElementById("student").append(ele);
     }
@@ -109,9 +109,8 @@ function setRank(index) {
 }
 
 function studentSubmit() {
-  document.writeln(`THIS IS A SERVER MESSAGE`);
-  document.writeln(`{<br>`)
-  document.writeln('jwt: ' + localStorage.getItem('JWTToken') + '<br>');
+  document.writeln(`Pretend this is a message to the server<br><br>`);
+  document.writeln('token: ' + localStorage.getItem('JWTToken') + '<br>');
   activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e, i) => {document.writeln(`choice #${i}: ${e.name}<br>`)});
 }
 
@@ -161,12 +160,17 @@ function loginCallback(response) {
 // Called when logged in (or loaded and logged in) and server-side validated
 function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
+  document.getElementById('header-message').innerHTML = `Welcome, ${decoded.sub}!`;
 
+  // Hide google sign in, show log out
+  document.getElementById('google-wrapper').style.display = 'none';
+  document.getElementById('logout').style.display = 'block';
+  
   // User is an student
   if (decoded.sub.includes("@tarriers.org")) {
     drawActivities();
-    document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
-    document.getElementById('logout').addEventListener('click', logout, false);
+    document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+    
     let btn = document.createElement('button');
     btn.id = 'student-submit';
     btn.innerHTML = "Submit";
@@ -177,8 +181,7 @@ function handleLogin(jwt) {
   // User is an admin
   if (decoded.sub.includes("@charleswright.org")) {
     drawAdmin();
-    document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
-    document.getElementById('logout').addEventListener('click', logout, false);
+    document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
   } 
   
 }
@@ -207,7 +210,7 @@ if (localStorage.getItem('JWTToken') !== null) {
   // Check token for validity
   fetch('https://aitoolft.com/api/auth/validate', {
     method: 'GET',
-    headers: {'Authorization': "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZWJyZUB0YXJyaWVycy5vcmciLCJpYXQiOjE3NDczNjg4NjUsImV4cCI6MTc0NzQ1NTI2NX0.pkeB8hGgWZsqv1HtSOmdXY4EQ_Dx7oIZ5cC5wfW1FOE"},
+    headers: {'Authorization': "Bearer " + localStorage.getItem('JWTToken')},
   })
   .then(res => res.status)
   .then(code => {
@@ -219,3 +222,5 @@ if (localStorage.getItem('JWTToken') !== null) {
     }
   })
 }
+
+document.getElementById('logout').addEventListener('click', logout, false);
