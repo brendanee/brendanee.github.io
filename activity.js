@@ -56,11 +56,11 @@ let activityList = [
     totalSpots: 17,
   },
 ];
-// Testing only
-let myGrade = 6;
+let grade;
 
 function drawActivities() {
   document.getElementById("student").innerHTML = "";
+
   activityList.forEach((e, i) => {
     let wordGrade = "";
     switch (e.grades.length) {
@@ -76,7 +76,7 @@ function drawActivities() {
     }
 
     let ele = document.createElement('div');
-    if (e.grades.includes(myGrade) && e.filledSpots !== e.totalSpots) {
+    if (e.grades.includes(grade) && e.filledSpots !== e.totalSpots) {
       ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
@@ -141,7 +141,8 @@ function drawAdmin() {
 function loginCallback(response) {
   // Don't decode
   const decoded = response.credential;
-  
+  // Saving name to localStorage - untrusted
+  localStorage.setItem('name', decodeJwtResponse(decoded).name);
   // Send token to backend
   fetch('https://aitoolft.com/api/login', {
     method: 'POST',
@@ -160,12 +161,40 @@ function loginCallback(response) {
 // Called when logged in (or loaded and logged in) and server-side validated
 function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
-  document.getElementById('header-message').innerHTML = `Welcome, ${decoded.sub}!`;
+
+  // Get grade
+  fetch('https://aitoolft.com/api/students/info', {
+    method: 'GET',
+    headers: {
+      'Authorization': "Bearer " + jwt,
+      'email': decoded.sub
+    },
+  })
+  .then(res => {
+    if (res.status === 403) {
+      console.error("No grade found, using test grade of 6th");
+      return {'grade': 6,}
+    } else {
+      res.json();
+    }
+  })
+  .then(data => {
+    grade = data.grade;
+  })
+
+  document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
   // Hide google sign in, show log out
   document.getElementById('google-wrapper').style.display = 'none';
   document.getElementById('logout').style.display = 'block';
-  
+
+  // User is an admin
+  if (decoded.sub.includes("@charleswright.org")) {
+    drawAdmin();
+    document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
+    return;
+  } 
+
   // User is an student
   if (decoded.sub.includes("@tarriers.org")) {
     drawActivities();
@@ -176,14 +205,8 @@ function handleLogin(jwt) {
     btn.innerHTML = "Submit";
     btn.addEventListener('click', studentSubmit, false);
     document.getElementById('student').insertAdjacentElement('afterend', btn);
+    return;
   }
-
-  // User is an admin
-  if (decoded.sub.includes("@charleswright.org")) {
-    drawAdmin();
-    document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
-  } 
-  
 }
 
 // Shamelessly stolen from Google, all rights to them or whatever
@@ -198,7 +221,7 @@ function decodeJwtResponse(token) {
 }
 
 function logout() {
-  localStorage.removeItem('JWTToken');
+  localStorage.clear();
   location.reload();
 }
 
@@ -220,7 +243,7 @@ if (localStorage.getItem('JWTToken') !== null) {
     if (code === 401) {
       logout();
     }
-  })
+  });
 }
 
 document.getElementById('logout').addEventListener('click', logout, false);
