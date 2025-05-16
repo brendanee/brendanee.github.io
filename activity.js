@@ -207,10 +207,18 @@ window.loginCallback = loginCallback;
 
 // On startup, if user is 
 if (localStorage.getItem('JWTToken') !== null) {
-  handleLogin(localStorage.getItem('JWTToken'));
-}
-/*
-  fetch('http://aitoolft.com/api/auth/validate', {
+  // Check token for validity
+  fetch('https://aitoolft.com/api/auth/validate', {
     method: 'GET',
-    headers: {'bearer': "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZWJyZUB0YXJyaWVycy5vcmciLCJpYXQiOjE3NDczNjc0NzEsImV4cCI6MTc0NzQ1Mzg3MX0.DuaJ-6hl8PdWoLxLtVOn2xcIOScKOXMGVNrVqEx7mJo"},
-  })*/
+    headers: {'Authorization': "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZWJyZUB0YXJyaWVycy5vcmciLCJpYXQiOjE3NDczNjg4NjUsImV4cCI6MTc0NzQ1NTI2NX0.pkeB8hGgWZsqv1HtSOmdXY4EQ_Dx7oIZ5cC5wfW1FOE"},
+  })
+  .then(res => res.status)
+  .then(code => {
+    if (code === 200) {
+      handleLogin(localStorage.getItem('JWTToken'));
+    }
+    if (code === 401) {
+      logout();
+    }
+  })
+}
