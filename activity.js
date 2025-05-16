@@ -140,7 +140,7 @@ function drawAdmin() {
 
 // After Google login flow
 function loginCallback(response) {
-  /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
+  // Don't decode
   const decoded = response.credential;
   
   // Send token to backend
@@ -149,12 +149,12 @@ function loginCallback(response) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({token: decoded})
   })
-  .then(res => res.JSON())
+  .then(res => res.json())
   .then(data => {
-    console.log(`Login success, token from server ${data}`);
-    localStorage.setItem('JWTToken', data);
+    console.log(`Login success, token from server ${data.token}`);
+    localStorage.setItem('JWTToken', data.token);
     // On message back from server, run log in client side
-    handleLogin(data);
+    handleLogin(data.token);
   });
 }
 
@@ -166,11 +166,10 @@ function handleLogin(jwt) {
   } else {
     // User logged in
     /* Show class selector */
-    document.getElementById("google-wrapper").style.display = 'none';
     // User is an student
-    if (decoded.hd === "tarriers.org") {
+    if (decoded.sub.includes("@tarriers.org")) {
       drawActivities();
-      document.getElementById("message").innerHTML = `Welcome, ${decoded.name}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+      document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
       document.getElementById('logout').addEventListener('click', logout, false);
       let btn = document.createElement('button');
       btn.id = 'student-submit';
@@ -179,9 +178,9 @@ function handleLogin(jwt) {
       document.getElementById('student').insertAdjacentElement('afterend', btn);
     }
     // User is an admin
-    if (decoded.hd === "charleswright.org" || decoded.email === "brendanee314@gmail.com") {
+    if (decoded.sub.includes("@charleswright.org")) {
       drawAdmin();
-      document.getElementById("message").innerHTML = `Welcome, ${decoded.name}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
+      document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
       document.getElementById('logout').addEventListener('click', logout, false);
     } 
   }
@@ -210,3 +209,8 @@ window.loginCallback = loginCallback;
 if (localStorage.getItem('JWTToken') !== null) {
   handleLogin(localStorage.getItem('JWTToken'));
 }
+/*
+  fetch('http://aitoolft.com/api/auth/validate', {
+    method: 'GET',
+    headers: {'bearer': "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZWJyZUB0YXJyaWVycy5vcmciLCJpYXQiOjE3NDczNjc0NzEsImV4cCI6MTc0NzQ1Mzg3MX0.DuaJ-6hl8PdWoLxLtVOn2xcIOScKOXMGVNrVqEx7mJo"},
+  })*/
