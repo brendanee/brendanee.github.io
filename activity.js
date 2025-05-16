@@ -89,6 +89,32 @@ function drawActivities() {
   });
 }
 
+function setRank(index) {
+  let cur = activityList[index];
+
+  if (cur.rank === null) {
+    let tryRank = 1;
+    while (activityList.map((e) => e.rank).includes(tryRank) && tryRank <= 4) {
+      tryRank++;
+    }
+    if (tryRank > 4) {
+      window.alert("Please only select your top four choices.")
+      return;
+    }
+    cur.rank = tryRank;
+  } else {
+    cur.rank = null;
+  }
+  drawActivities();
+}
+
+function studentSubmit() {
+  document.writeln(`THIS IS A SERVER MESSAGE`);
+  document.writeln(`{<br>`)
+  document.writeln('jwt: ' + localStorage.getItem('JWTToken') + '<br>');
+  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e, i) => {document.writeln(`choice #${i}: ${e.name}<br>`)});
+}
+
 function drawAdmin() {
   document.getElementById("admin").innerHTML = "";
   activityList.forEach((e, i) => {
@@ -112,41 +138,33 @@ function drawAdmin() {
   });
 }
 
-function setRank(index) {
-  let cur = activityList[index];
-
-  if (cur.rank === null) {
-    let tryRank = 1;
-    while (activityList.map((e) => e.rank).includes(tryRank) && tryRank <= 4) {
-      tryRank++;
-    }
-    if (tryRank > 4) {
-      window.alert("Please only select your top four choices.")
-      return;
-    }
-    cur.rank = tryRank;
-  } else {
-    cur.rank = null;
-  }
-  drawActivities();
-}
-
 // After Google login flow
 function loginCallback(response) {
   /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
   const decoded = decodeJwtResponse(response.credential);
   
-  handleLogin(decoded, response.credential);
+  // Send token to backend
+  fetch('https://aitoolft.com/api/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({token: decoded})
+  })
+  .then(res => res.JSON())
+  .then(data => {
+    console.log(`Login success, token from server ${data}`);
+    localStorage.setItem('JWTToken', data);
+    // On message back from server, run log in client side
+    handleLogin(data);
+  });
 }
 
-function handleLogin(decoded, jwt) {
-  if (decoded.exp < Date.now) {
+function handleLogin(jwt) {
+  const decoded = decodeJwtResponse(jwt);
+  if (decoded.exp < Date.now / 1000) {
     // Token expired
     localStorage.removeItem('JWTToken');
   } else {
     // User logged in
-    localStorage.setItem('JWTToken', jwt);
-
     /* Show class selector */
     document.getElementById("google-wrapper").style.display = 'none';
     // User is an student
@@ -169,13 +187,6 @@ function handleLogin(decoded, jwt) {
   }
 }
 
-function studentSubmit() {
-  document.writeln(`THIS IS A SERVER MESSAGE`);
-  document.writeln(`{<br>`)
-  document.writeln('jwt: ' + localStorage.getItem('JWTToken') + '<br>');
-  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e, i) => {document.writeln(`choice #${i}: ${e.name}<br>`)});
-}
-
 // Shamelessly stolen from Google, all rights to them or whatever
 function decodeJwtResponse(token) {
   let base64Url = token.split('.')[1];
@@ -192,10 +203,10 @@ function logout() {
   location.reload();
 }
 
-// Needed as loginCallback, which Google calls, needs to be a global fucntion or something idk
+// Needed as loginCallback, which Google calls, needs to be a global function or something idk
 window.loginCallback = loginCallback;
 
-
+// On startup, if user is 
 if (localStorage.getItem('JWTToken') !== null) {
-  handleLogin(decodeJwtResponse(localStorage.getItem('JWTToken')), localStorage.getItem('JWTToken'));
+  handleLogin(localStorage.getItem('JWTToken'));
 }
