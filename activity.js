@@ -141,7 +141,7 @@ function drawAdmin() {
 // After Google login flow
 function loginCallback(response) {
   /* CALLBACK FUNCTION RETURNS AN OBJECT WE ONLY WANT ONE VALUE FROM */
-  const decoded = decodeJwtResponse(response.credential);
+  const decoded = response.credential;
   
   // Send token to backend
   fetch('https://aitoolft.com/api/login', {
