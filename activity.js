@@ -60,7 +60,7 @@ let activityList = [
 let myGrade = 6;
 
 function drawActivities() {
-  document.getElementById("choices").innerHTML = "";
+  document.getElementById("student").innerHTML = "";
   activityList.forEach((e, i) => {
     let wordGrade = "";
     switch (e.grades.length) {
@@ -80,11 +80,11 @@ function drawActivities() {
       ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spots left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
-      document.getElementById("choices").prepend(ele);
+      document.getElementById("student").prepend(ele);
     } else {
       ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spots left`;
       ele.className = 'cannotSelect';
-      document.getElementById("choices").append(ele);
+      document.getElementById("student").append(ele);
     }
   });
 }
@@ -107,7 +107,7 @@ function drawAdmin() {
 
     let ele = document.createElement('div');
     ele.className = 'adminChoice';
-    ele.innerHTML = `${e.name} - ${wordGrade}<div class="studentList"><i>NO students sgined up</i></div>`;
+    ele.innerHTML = `${e.name} - ${wordGrade}<div class="studentList">${e.filledSpots} signed up (max ${e.totalSpots})</div>`;
     document.getElementById('admin').append(ele);
   });
 }
@@ -154,6 +154,11 @@ function handleLogin(decoded, jwt) {
       drawActivities();
       document.getElementById("message").innerHTML = `Welcome, ${decoded.name}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
       document.getElementById('logout').addEventListener('click', logout, false);
+      let btn = document.createElement('button');
+      btn.id = 'student-submit';
+      btn.innerHTML = "Submit";
+      btn.addEventListener('click', studentSubmit, false);
+      document.getElementById('student').insertAdjacentElement('afterend', btn);
     }
     // User is an admin
     if (decoded.hd === "charleswright.org" || decoded.email === "brendanee314@gmail.com") {
@@ -162,6 +167,13 @@ function handleLogin(decoded, jwt) {
       document.getElementById('logout').addEventListener('click', logout, false);
     } 
   }
+}
+
+function studentSubmit() {
+  document.writeln(`THIS IS A SERVER MESSAGE`);
+  document.writeln(`{<br>`)
+  document.writeln('jwt: ' + localStorage.getItem('JWTToken') + '<br>');
+  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e, i) => {document.writeln(`choice #${i}: ${e.name}<br>`)});
 }
 
 // Shamelessly stolen from Google, all rights to them or whatever
