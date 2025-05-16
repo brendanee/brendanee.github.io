@@ -158,32 +158,29 @@ function loginCallback(response) {
   });
 }
 
+// Called when logged in (or loaded and logged in) and server-side validated
 function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
-  if (decoded.exp < Date.now / 1000) {
-    // Token expired
-    localStorage.removeItem('JWTToken');
-  } else {
-    // User logged in
-    /* Show class selector */
-    // User is an student
-    if (decoded.sub.includes("@tarriers.org")) {
-      drawActivities();
-      document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
-      document.getElementById('logout').addEventListener('click', logout, false);
-      let btn = document.createElement('button');
-      btn.id = 'student-submit';
-      btn.innerHTML = "Submit";
-      btn.addEventListener('click', studentSubmit, false);
-      document.getElementById('student').insertAdjacentElement('afterend', btn);
-    }
-    // User is an admin
-    if (decoded.sub.includes("@charleswright.org")) {
-      drawAdmin();
-      document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
-      document.getElementById('logout').addEventListener('click', logout, false);
-    } 
+
+  // User is an student
+  if (decoded.sub.includes("@tarriers.org")) {
+    drawActivities();
+    document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+    document.getElementById('logout').addEventListener('click', logout, false);
+    let btn = document.createElement('button');
+    btn.id = 'student-submit';
+    btn.innerHTML = "Submit";
+    btn.addEventListener('click', studentSubmit, false);
+    document.getElementById('student').insertAdjacentElement('afterend', btn);
   }
+
+  // User is an admin
+  if (decoded.sub.includes("@charleswright.org")) {
+    drawAdmin();
+    document.getElementById("message").innerHTML = `Welcome, ${decoded.sub}! <span id="logout">Logout</span><br> View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
+    document.getElementById('logout').addEventListener('click', logout, false);
+  } 
+  
 }
 
 // Shamelessly stolen from Google, all rights to them or whatever
