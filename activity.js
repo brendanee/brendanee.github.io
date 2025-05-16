@@ -57,9 +57,13 @@ let activityList = [
   },
 ];
 let grade;
+const studentDiv = document.getElementById('student');
+const adminDiv = document.getElementById('admin');
 
 function drawActivities() {
-  document.getElementById("student").innerHTML = "";
+  adminDiv.innerHTML = "";
+  studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
+  document.querySelector('html').className = '';
 
   activityList.forEach((e, i) => {
     let wordGrade = "";
@@ -80,13 +84,20 @@ function drawActivities() {
       ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
-      document.getElementById("student").prepend(ele);
+      document.getElementById('activity-wrapper').prepend(ele);
     } else {
       ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
       ele.className = 'cannotSelect';
-      document.getElementById("student").append(ele);
+      document.getElementById('activity-wrapper').append(ele);
     }
   });
+  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+  
+  let btn = document.createElement('button');
+  btn.id = 'student-submit';
+  btn.innerHTML = "Submit";
+  btn.addEventListener('click', studentSubmit, false);
+  studentDiv.appendChild(btn);  
 }
 
 function setRank(index) {
@@ -115,7 +126,10 @@ function studentSubmit() {
 }
 
 function drawAdmin() {
-  document.getElementById("admin").innerHTML = "";
+  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"></div>`;
+  studentDiv.innerHTML = "";
+  document.querySelector('html').className = 'admin';
+
   activityList.forEach((e, i) => {
     let wordGrade = "";
     switch (e.grades.length) {
@@ -133,8 +147,10 @@ function drawAdmin() {
     let ele = document.createElement('div');
     ele.className = 'adminChoice';
     ele.innerHTML = `${e.name} - ${wordGrade}<div class="studentList">${e.filledSpots} signed up (max ${e.totalSpots})</div>`;
-    document.getElementById('admin').append(ele);
+    document.getElementById('admin-activity-wrapper').append(ele);
   });
+
+  document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;        
 }
 
 // After Google login flow
@@ -163,16 +179,10 @@ function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
 
   // Get grade
-  fetch('https://aitoolft.com/api/students/info', {
-    method: 'GET',
-    headers: {
-      'Authorization': "Bearer " + jwt,
-      'email': decoded.sub
-    },
-  })
+  fetch(`https://aitoolft.com/api/students/info?email=${decoded.sub}`, {method: 'GET'}) 
   .then(res => {
-    if (res.status === 403) {
-      console.error("No grade found, using test grade of 6th");
+    if (res.status === 404) {
+      console.warn("No grade found, using test grade of 6th. Failed email: " + decoded.sub);
       return {'grade': 6,}
     } else {
       res.json();
@@ -180,33 +190,25 @@ function handleLogin(jwt) {
   })
   .then(data => {
     grade = data.grade;
-  })
+    document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
-  document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
+    // Hide google sign in, show log out
+    document.getElementById('google-wrapper').style.display = 'none';
+    document.getElementById('logout').style.display = 'block';
 
-  // Hide google sign in, show log out
-  document.getElementById('google-wrapper').style.display = 'none';
-  document.getElementById('logout').style.display = 'block';
+    // User is an admin
+    if (decoded.sub.includes("@charleswright.org")) {
+      drawAdmin();
+      return;
+    } 
 
-  // User is an admin
-  if (decoded.sub.includes("@charleswright.org")) {
-    drawAdmin();
-    document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;
-    return;
-  } 
-
-  // User is an student
-  if (decoded.sub.includes("@tarriers.org")) {
-    drawActivities();
-    document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
-    
-    let btn = document.createElement('button');
-    btn.id = 'student-submit';
-    btn.innerHTML = "Submit";
-    btn.addEventListener('click', studentSubmit, false);
-    document.getElementById('student').insertAdjacentElement('afterend', btn);
-    return;
-  }
+    // User is an student
+    if (decoded.sub.includes("@tarriers.org")) {
+      drawActivities();
+      return;
+    }
+  });
+  // End of fetch request
 }
 
 // Shamelessly stolen from Google, all rights to them or whatever

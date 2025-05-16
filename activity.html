@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="Content-Security-Policy" content="script-src *; frame-src https://accounts.google.com/gsi/; connect-src *;">
+	<meta http-equiv="Content-Security-Policy" content="frame-src https://accounts.google.com/gsi/; connect-src *;">
 	<meta http-equiv="Cross-Origin-Opener-Policy" content="unsafe-none">
 	<title>CWA Middle School Activity Sign-Up</title>
 	<link rel="icon" href="./assets/favicon.ico">
@@ -39,6 +39,7 @@
      <img height="70px" src="./Green CWA Logo.jpg" alt="The Charles Wright Academy Logo">
 </main>
 <footer>Site made by Soul Yang '27, Joon In '27, and Brendan Ee '26!</footer>
+<div style="position: fixed; bottom: 0; left: 0; background-color: red; padding: 10px;"><button onclick="drawAdmin()">DEBUG: Show Admin View</button><button onclick="drawActivities()">DEBUG: Show Student View</button></div>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script src="./activity.js"></script>
 </body>
