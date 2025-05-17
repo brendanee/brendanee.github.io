@@ -10,10 +10,6 @@ html {
   --blue: #00a1e0;
 }
 
-.admin {
-
-}
-
 body {
   display: block;
   margin: 50px 0 0 0;
@@ -82,9 +78,9 @@ h1 {
 }
 
 img {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
+  height: 40px;
+  float: left;
+  margin-right: 10px;
 }
 
 .admin-choice {
@@ -114,7 +110,7 @@ img {
 }
 
 #student-submit {
-  padding: 20px;
+  padding: 15px 25px;
   border-radius: 10px;
   font-size: 24px;
   background-color: var(--green);
@@ -195,12 +191,27 @@ main {
   flex-wrap: wrap;
 }
 
-#add-activity {
-  background-color: var(--blue);
+button {
   color: white;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 5px;
   cursor: pointer;
+  border: none;
+  font-size: 20px;
+  font-family: Montserrat;
+}
+
+#sidebar > button {
+  margin: 5px;
+  width: 200px;
+}
+
+#activity-add, #activity-submit {
+  background-color: var(--blue);
+}
+
+#view-student {
+  background-color: var(--light-green);
 }
 
 #popup {
@@ -257,4 +268,5 @@ input[type="checkbox"] {
   accent-color: var(--green);
   height: 20px;
   width: 20px;
+
 }

@@ -126,7 +126,7 @@ function studentSubmit() {
 }
 
 function drawAdmin() {
-  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><div id="add-activity"><b>+</b> Add Activity</div></div>`;
+  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawActivities()" id="view-student">View Student Interface</button></div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
@@ -149,8 +149,8 @@ function drawAdmin() {
     ele.innerHTML = `<span class="admin-choice-name">${e.name}</span> <span class="admin-choice-id">${e.id}</span> <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span><br>${wordGrade}<br>${e.limit - 0} spots left, ${0} signed up (max ${e.limit})<div class="studentList"></div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
-  document.getElementById('add-activity').addEventListener('click', showAddActivity, false);
-  document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;        
+  document.getElementById('activity-add').addEventListener('click', showAddActivity, false);
+  document.getElementById("message").innerHTML = `Manage activites, add activities, below. Use the blue button on the right to add activites.`;        
 }
 
 function showAddActivity() {
@@ -159,7 +159,7 @@ function showAddActivity() {
     <input type="text" placeholder="i.e. Cool Kid's Club" name="activity-name" id="activity-name">
     <label for="activity-id">Veracross ID:</label>
     <input type="text" placeholder="i.e. MATH:3900" name="activity-id" id="activity-id">
-    <label for="total-spots">Max particapants:</label>
+    <label for="total-spots">Maximum participants:</label>
     <input type="number" placeholder="i.e. 15" name="total-spots" id="total-spots">
     Allowed Grades:<br>
     <label for="5">5th</label>
@@ -170,10 +170,10 @@ function showAddActivity() {
     <label for="7">7th</label>
     <input checked type="checkbox" name="7" id="7">
     <label for="8">8th</label>
-    <input checked type="checkbox" name="8" id="8">
-    <button id="submit">Submit</button>
+    <input checked type="checkbox" name="8" id="8"><br>
+    <button id="activity-submit">Submit Activity</button>
   `;
-  document.getElementById('submit').addEventListener('click', handleAddActivity, false);
+  document.getElementById('activity-submit').addEventListener('click', handleAddActivity, false);
 }
 
 function handleAddActivity() {
