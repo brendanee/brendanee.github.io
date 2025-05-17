@@ -87,13 +87,31 @@ img {
   right: 10px;
 }
 
-.adminChoice {
-  padding: 20px;
+.admin-choice {
+  padding: 10px;
   border: 2px solid var(--green);
-  border-radius: 10px;
+  border-radius: 5px;
   margin-bottom: 10px;
+  flex-basis: 300px;
+  margin: 5px;
+  flex-grow: 1;
+  text-align: left;
 }
 
+.admin-choice-name {
+  font-family: Montserrat, sans-serif;
+  font-size: 24px;
+}
+.admin-choice-id {
+  color: grey;
+}
+
+.admin-choice-delete {
+  color: var(--orange);
+  text-decoration: underline;
+  float: right;
+  cursor: pointer;
+}
 
 #student-submit {
   padding: 20px;
@@ -149,7 +167,7 @@ main {
 
 #admin {
   height: 100%;
-  
+  padding: 5px;
 }
 
 #admin > #activity-wrapper {
@@ -172,10 +190,71 @@ main {
   width: calc(100vw - 300px - 10px);
 }
 
+#admin-activity-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 #add-activity {
   background-color: var(--blue);
   color: white;
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+}
+
+#popup {
+  display: none;;
+  position: fixed;
+  top: calc(50% - 100px);
+  left: calc(50% - 225px);
+  width: 450px;
+  min-height: 200px;
+  background-color: white;
+  border-radius: 10px;
+  border: 3px solid var(--blue);
+  padding: 20px;
+}
+
+#popup-ok {
+  right: 20px;
+  color: white;
+  background-color: var(--orange);
+  border: 3px solid var(--orange)
+}
+
+#popup-cancel {
+  left: 20px;
+  background-color: white;
+  border: 3px solid var(--green);
+}
+
+#popup > button {
+  position: absolute;
+  bottom: 20px;
+  font-size: 18px;
+  font-family: Montserrat, sans-serif;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+input[type="text"], input[type="number"] {
+  background-color: white;
+  border: 3px solid var(--blue);
+  padding: 5px;
+  font-size: 18px;;
+  border-style: none none solid none;
+  margin:5px auto;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+  border-color: var(--orange);
+  outline: none;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--green);
+  height: 20px;
+  width: 20px;
 }

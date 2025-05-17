@@ -109,7 +109,7 @@ function setRank(index) {
       tryRank++;
     }
     if (tryRank > 4) {
-      window.alert("Please only select your top four choices.")
+      makePopup('Please only select your top four choices. Thank you!', false, '');
       return;
     }
     cur.rank = tryRank;
@@ -145,8 +145,8 @@ function drawAdmin() {
     }
 
     let ele = document.createElement('div');
-    ele.className = 'adminChoice';
-    ele.innerHTML = `${e.name} (${e.id}) - ${wordGrade}<div class="studentList">${0} signed up (max ${e.limit})</div>`;
+    ele.className = 'admin-choice';
+    ele.innerHTML = `<span class="admin-choice-name">${e.name}</span> <span class="admin-choice-id">${e.id}</span> <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span><br>${wordGrade}<br>${e.limit - 0} spots left, ${0} signed up (max ${e.limit})<div class="studentList"></div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
   document.getElementById('add-activity').addEventListener('click', showAddActivity, false);
@@ -157,14 +157,16 @@ function showAddActivity() {
   document.getElementById('sidebar').innerHTML += `
     <label for="activity-name">Activity Name:</label>
     <input type="text" placeholder="i.e. Cool Kid's Club" name="activity-name" id="activity-name">
-    <label for="activity-name">Veracross ID:</label>
-    <input type="text" placeholder="i.e. MATH:3900" name="activity-name" id="activity-name">
+    <label for="activity-id">Veracross ID:</label>
+    <input type="text" placeholder="i.e. MATH:3900" name="activity-id" id="activity-id">
     <label for="total-spots">Max particapants:</label>
-    <input type="number" placeholder="15" name="total-spots" id="total-spots">
+    <input type="number" placeholder="i.e. 15" name="total-spots" id="total-spots">
+    Allowed Grades:<br>
     <label for="5">5th</label>
     <input checked type="checkbox" name="5" id="5">
     <label for="6">6th</label>
     <input checked type="checkbox" name="6" id="6">
+    <br>
     <label for="7">7th</label>
     <input checked type="checkbox" name="7" id="7">
     <label for="8">8th</label>
@@ -180,12 +182,27 @@ function handleAddActivity() {
   document.getElementById('6').checked ? gradeList.push(6) : '';
   document.getElementById('7').checked ? gradeList.push(7) : '';
   document.getElementById('8').checked ? gradeList.push(8) : '';
-  
+
+  const activityName = document.getElementById('activity-name').value;
+  const activityId = document.getElementById('activity-id').value;
+  const limit = document.getElementById('total-spots').value;
+  if (activityName === "") {
+    makePopup('Activity name must not be blank.');
+    return;
+  }
+  if (activityId === "") {
+    makePopup('Veracross ID must not be blank.');
+    return;
+  }
+  if (limit < 1) {
+    makePopup('Maximun number of students cannot be blank or zero. If there is no maximun student, enter a large number.');
+    return;
+  }
   let object = {
-    name: document.getElementById('activity-name').value,
+    name: activityName,
     grade: gradeList,
-    id: Date.now(),
-    limit: document.getElementById('total-spots').value,
+    id: activityId,
+    limit: limit,
   }
   
   fetch('https://aitoolft.com/api/admin/elective/add', {
@@ -195,7 +212,36 @@ function handleAddActivity() {
   })
   .then(res => res.status)
   .then(code => {
-    console.log(`sucess` + code);
+    if (code === 200) {
+      // getActivities is async, we need another nested dot then for after it's done
+      getActivities().then((a) => {
+        activityList = a;
+        drawAdmin();
+        makePopup(`Successfully created ${activityName}!`);
+      });
+    } else {
+      makePopup('An error occurred: Code ' + code);
+    }
+  });
+}
+
+function deleteActivity(id) {
+  fetch('https://aitoolft.com/api/admin/elective/delete', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
+    body: JSON.stringify({'id': id}),
+  })
+  .then(res => res.status)
+  .then(code => {
+    if (code === 200) {
+      getActivities().then((a) => {
+        activityList = a;
+        drawAdmin();
+        makePopup(`Successfully deleted ${id}.`);
+      });
+    } else {
+      makePopup('An error occurred: Code ' + code);
+    }
   });
 }
 
@@ -283,6 +329,22 @@ function logout() {
   location.reload();
 }
 
+/**
+ * 
+ * @param {String} message The message shown to the user.
+ * @param {boolean} showCancel Whether to show the cancel button or not
+ * @param {String} confirmAction The action taken following an ok button press
+ */
+function makePopup(message, showCancel, confirmAction) {
+  const popup = document.getElementById('popup');
+  popup.innerHTML = `${message}<button onclick="document.getElementById('popup').style.display = 'none';" id="popup-cancel">Cancel</button><button id="popup-ok">Ok</button>`;
+  if (!showCancel) {
+    document.getElementById('popup-cancel').style.display = 'none';
+  }
+  document.getElementById('popup-ok').setAttribute('onclick', `document.getElementById('popup').style.display = 'none';${confirmAction}`);
+  popup.style.display = 'block';
+}
+
 // Needed as loginCallback, which Google calls, needs to be a global function or something idk
 window.loginCallback = loginCallback;
 
@@ -305,3 +367,4 @@ if (localStorage.getItem('JWTToken') !== null) {
 }
 
 document.getElementById('logout').addEventListener('click', logout, false);
+
