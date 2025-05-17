@@ -5,7 +5,9 @@ html {
   font-family: Verdana, sans-serif;
   font-size: 18px;
   --green: #0a5640;
-  --light-green: rgb(157, 223, 79);
+  --light-green: #76bd22;
+  --orange: #e14504;
+  --blue: #00a1e0;
 }
 
 .admin {
@@ -156,15 +158,24 @@ main {
 }
 
 #sidebar {
-  height: 50vh;
-  width: 30%;
-  background-color: green;
+  height: calc(100vh - 53px);
+  width: 260px;
+  background-color: #ddd;
   float: right;
   position: fixed;
   top: 53px;
   right: 0;
+  padding: 10px;
 }
 
 .admin h1, .admin p, #admin-activity-wrapper {
-  width: 70%;
+  width: calc(100vw - 300px - 10px);
+}
+
+#add-activity {
+  background-color: var(--blue);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
 }

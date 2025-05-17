@@ -1,5 +1,5 @@
-let activityList = [
-  {
+let activityList = [];
+  /*{
     name: "Cool Kid Club",
     grades: [5, 6, 7, 8],
     rank: null,
@@ -54,9 +54,9 @@ let activityList = [
     rank: null,
     filledSpots: 17,
     totalSpots: 17,
-  },
-];
-let grade;
+  },*/
+
+let myGrade;
 const studentDiv = document.getElementById('student');
 const adminDiv = document.getElementById('admin');
 
@@ -67,26 +67,26 @@ function drawActivities() {
 
   activityList.forEach((e, i) => {
     let wordGrade = "";
-    switch (e.grades.length) {
+    switch (e.grade.length) {
       case 1:
-        wordGrade = e.grades + "th Grade Only";
+        wordGrade = e.grade + "th Grade Only";
         break;
       case 4:
         wordGrade = "All Grades";
         break;
       default:
-        wordGrade = "Grades " + e.grades;
+        wordGrade = "Grades " + e.grade;
         break;
     }
 
     let ele = document.createElement('div');
-    if (e.grades.includes(grade) && e.filledSpots !== e.totalSpots) {
-      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
+    if (e.grade.includes(myGrade) && 0 !== e.limit) {
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - 0} spot${e.limit - 0 === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
       document.getElementById('activity-wrapper').prepend(ele);
     } else {
-      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.totalSpots - e.filledSpots} spot${e.totalSpots - e.filledSpots === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - 0} spot${e.limit - 0 === 1 ? "" : "s"} left`;
       ele.className = 'cannotSelect';
       document.getElementById('activity-wrapper').append(ele);
     }
@@ -126,31 +126,77 @@ function studentSubmit() {
 }
 
 function drawAdmin() {
-  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"></div>`;
+  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><div id="add-activity"><b>+</b> Add Activity</div></div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
   activityList.forEach((e, i) => {
     let wordGrade = "";
-    switch (e.grades.length) {
+    switch (e.grade.length) {
       case 1:
-        wordGrade = e.grades + "th Grade Only";
+        wordGrade = e.grade + "th Grade Only";
         break;
       case 4:
         wordGrade = "All Grades";
         break;
       default:
-        wordGrade = "Grades " + e.grades;
+        wordGrade = "Grades " + e.grade;
         break;
     }
 
     let ele = document.createElement('div');
     ele.className = 'adminChoice';
-    ele.innerHTML = `${e.name} - ${wordGrade}<div class="studentList">${e.filledSpots} signed up (max ${e.totalSpots})</div>`;
+    ele.innerHTML = `${e.name} (${e.id}) - ${wordGrade}<div class="studentList">${0} signed up (max ${e.limit})</div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
-
+  document.getElementById('add-activity').addEventListener('click', showAddActivity, false);
   document.getElementById("message").innerHTML = `View what clubs the students have choosen here, and modeify them. Insert fancy admin stuff here.`;        
+}
+
+function showAddActivity() {
+  document.getElementById('sidebar').innerHTML += `
+    <label for="activity-name">Activity Name:</label>
+    <input type="text" placeholder="i.e. Cool Kid's Club" name="activity-name" id="activity-name">
+    <label for="activity-name">Veracross ID:</label>
+    <input type="text" placeholder="i.e. MATH:3900" name="activity-name" id="activity-name">
+    <label for="total-spots">Max particapants:</label>
+    <input type="number" placeholder="15" name="total-spots" id="total-spots">
+    <label for="5">5th</label>
+    <input checked type="checkbox" name="5" id="5">
+    <label for="6">6th</label>
+    <input checked type="checkbox" name="6" id="6">
+    <label for="7">7th</label>
+    <input checked type="checkbox" name="7" id="7">
+    <label for="8">8th</label>
+    <input checked type="checkbox" name="8" id="8">
+    <button id="submit">Submit</button>
+  `;
+  document.getElementById('submit').addEventListener('click', handleAddActivity, false);
+}
+
+function handleAddActivity() {
+  let gradeList = [];
+  document.getElementById('5').checked ? gradeList.push(5) : '';
+  document.getElementById('6').checked ? gradeList.push(6) : '';
+  document.getElementById('7').checked ? gradeList.push(7) : '';
+  document.getElementById('8').checked ? gradeList.push(8) : '';
+  
+  let object = {
+    name: document.getElementById('activity-name').value,
+    grade: gradeList,
+    id: Date.now(),
+    limit: document.getElementById('total-spots').value,
+  }
+  
+  fetch('https://aitoolft.com/api/admin/elective/add', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
+    body: JSON.stringify(object),
+  })
+  .then(res => res.status)
+  .then(code => {
+    console.log(`sucess` + code);
+  });
 }
 
 // After Google login flow
@@ -175,21 +221,11 @@ function loginCallback(response) {
 }
 
 // Called when logged in (or loaded and logged in) and server-side validated
-function handleLogin(jwt) {
+async function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
 
-  // Get grade
-  fetch(`https://aitoolft.com/api/students/info?email=${decoded.sub}`, {method: 'GET'}) 
-  .then(res => {
-    if (res.status === 404) {
-      console.warn("No grade found, using test grade of 6th. Failed email: " + decoded.sub);
-      return {'grade': 6,}
-    } else {
-      res.json();
-    }
-  })
-  .then(data => {
-    grade = data.grade;
+  myGrade = await getGrade(decoded.sub);
+  activityList = await getActivities();
     document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
     // Hide google sign in, show log out
@@ -207,8 +243,28 @@ function handleLogin(jwt) {
       drawActivities();
       return;
     }
-  });
-  // End of fetch request
+}
+
+async function getGrade(email) {
+  return fetch(`https://aitoolft.com/api/students/info?email=${email}`, {method: 'GET'}) 
+  .then(res => {
+    if (res.status === 404) {
+      console.warn("No grade found, using test grade of 6th. Failed email: " + email);
+      return {'grade': 6,}
+    } else {
+      res.json();
+    }
+  })
+  .then(data => data.grade);
+}
+
+async function getActivities() {
+  return fetch('https://aitoolft.com/api/admin/elective/getall', {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
+  })
+  .then(res => res.json())
+  .then(data => {data.forEach((e) => e.rank = null); return data;});
 }
 
 // Shamelessly stolen from Google, all rights to them or whatever
