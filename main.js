@@ -60,7 +60,7 @@ let myGrade;
 const studentDiv = document.getElementById('student');
 const adminDiv = document.getElementById('admin');
 
-function drawActivities() {
+function drawStudent() {
   adminDiv.innerHTML = "";
   studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
   document.querySelector('html').className = '';
@@ -116,7 +116,7 @@ function setRank(index) {
   } else {
     cur.rank = null;
   }
-  drawActivities();
+  drawStudent();
 }
 
 function studentSubmit() {
@@ -126,7 +126,7 @@ function studentSubmit() {
 }
 
 function drawAdmin() {
-  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawActivities()" id="view-student">View Student Interface</button></div>`;
+  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent()" id="view-student">View Student Interface</button></div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
@@ -195,7 +195,7 @@ function handleAddActivity() {
     return;
   }
   if (limit < 1) {
-    makePopup('Maximun number of students cannot be blank or zero. If there is no maximun student, enter a large number.');
+    makePopup('Maximun number of students cannot be blank or zero. If activity has no participant limit, enter a large number.');
     return;
   }
   let object = {
@@ -286,7 +286,7 @@ async function handleLogin(jwt) {
 
     // User is an student
     if (decoded.sub.includes("@tarriers.org")) {
-      drawActivities();
+      drawStudent();
       return;
     }
 }
@@ -298,7 +298,7 @@ async function getGrade(email) {
       console.warn("No grade found, using test grade of 6th. Failed email: " + email);
       return {'grade': 6,}
     } else {
-      res.json();
+      return res.json();
     }
   })
   .then(data => data.grade);
@@ -309,7 +309,13 @@ async function getActivities() {
     method: 'GET',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
   })
-  .then(res => res.json())
+  .then(res => {
+    if (res.status !== 200) {
+      makePopup('Error getting activities list, Code ' + res.status);
+    } else {
+      return res.json();
+    }
+  })
   .then(data => {data.forEach((e) => e.rank = null); return data;});
 }
 
