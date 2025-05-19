@@ -120,9 +120,26 @@ function setRank(index) {
 }
 
 function studentSubmit() {
-  document.writeln(`Pretend this is a message to the server<br><br>`);
-  document.writeln('token: ' + localStorage.getItem('JWTToken') + '<br>');
-  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e, i) => {document.writeln(`choice #${i}: ${e.name}<br>`)});
+  let object = {electives: [],}
+  activityList
+  .filter((e) => e.rank !== null)
+  .sort((a, b) => a.rank - b.rank)
+  .forEach((e) => {object.electives.push(e.id);});
+
+  fetch('https://aitoolft.com/api/students/submit', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
+    body: JSON.stringify(object),
+  })
+  .then(res => res.status)
+  .then(code => {
+    if (code === 200) {
+      makePopup(`Successfuly submitted your activity choices!`);
+    } else {
+      makePopup('An error occurred: Code ' + code);
+    }
+  });
+  
 }
 
 function drawAdmin() {
