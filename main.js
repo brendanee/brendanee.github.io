@@ -81,17 +81,17 @@ function drawStudent() {
 
     let ele = document.createElement('div');
     if (e.grade.includes(myGrade) && 0 !== e.limit) {
-      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - 0} spot${e.limit - 0 === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
       document.getElementById('activity-wrapper').prepend(ele);
     } else {
-      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - 0} spot${e.limit - 0 === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
       ele.className = 'cannotSelect';
       document.getElementById('activity-wrapper').append(ele);
     }
   });
-  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quarter. You cannot select a club you've already taken, or one that's not available for your grade.`;
   
   let btn = document.createElement('button');
   btn.id = 'student-submit';
@@ -163,7 +163,12 @@ function drawAdmin() {
 
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
-    ele.innerHTML = `<span class="admin-choice-name">${e.name}</span> <span class="admin-choice-id">${e.id}</span> <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span><br>${wordGrade}<br>${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})<div class="studentList">${e.students.join('<br>')}</div>`;
+    ele.innerHTML = `
+      <span class="admin-choice-name">${e.name}</span>
+      <span class="admin-choice-id">${e.id}</span>
+      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
+      <br>${wordGrade}<br>${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})
+      <div class="studentList">${e.students.join('<br>')}</div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
   document.getElementById('activity-add').addEventListener('click', showAddActivity, false);
