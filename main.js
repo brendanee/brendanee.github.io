@@ -163,7 +163,7 @@ function drawAdmin() {
 
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
-    ele.innerHTML = `<span class="admin-choice-name">${e.name}</span> <span class="admin-choice-id">${e.id}</span> <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span><br>${wordGrade}<br>${e.limit - 0} spots left, ${0} signed up (max ${e.limit})<div class="studentList"></div>`;
+    ele.innerHTML = `<span class="admin-choice-name">${e.name}</span> <span class="admin-choice-id">${e.id}</span> <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span><br>${wordGrade}<br>${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})<div class="studentList">${e.students.join('<br>')}</div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
   document.getElementById('activity-add').addEventListener('click', showAddActivity, false);
