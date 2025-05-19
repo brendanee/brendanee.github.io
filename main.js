@@ -1,65 +1,13 @@
+// Filled by functions
 let activityList = [];
-  /*{
-    name: "Cool Kid Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 20,
-  },
-  {
-    name: "Lorem Ipsum Club",
-    grades: [7, 8],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 10,
-  },
-  {
-    name: "Fifth Grade Only Club",
-    grades: [5],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 20,
-  },
-  {
-    name: "Crumbl Cookie Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 18,
-    totalSpots: 20,
-  },
-  {
-    name: "Another Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 19,
-    totalSpots: 20,
-  },
-  {
-    name: "A Third Club",
-    grades: [6, 7],
-    rank: null,
-    filledSpots: 15,
-    totalSpots: 20,
-  },
-  {
-    name: "Qwertyuiop Club",
-    grades: [6, 7, 8],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 20,
-  },
-  {
-    name: "Asdf Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 17,
-    totalSpots: 17,
-  },*/
-
 let myGrade;
+
 const studentDiv = document.getElementById('student');
 const adminDiv = document.getElementById('admin');
 
+/**
+ * Called following student login from handleLogin, either from loginCallback or webpage load. Also called to refresh screen following data update (fetch load, click, etc.)
+ */
 function drawStudent() {
   adminDiv.innerHTML = "";
   studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
@@ -100,6 +48,11 @@ function drawStudent() {
   studentDiv.appendChild(btn);  
 }
 
+/**
+ * Called on student activity option click
+ * @param {Number} index The index of the activity in activityList the student clicked
+ * @returns Nothing
+ */
 function setRank(index) {
   let cur = activityList[index];
 
@@ -235,8 +188,8 @@ function handleAddActivity() {
   .then(res => res.status)
   .then(code => {
     if (code === 200) {
-      // getActivities is async, we need another nested dot then for after it's done
-      getActivities().then((a) => {
+      // getActivities is async net request, we need another nested dot then for after it's done
+      getActivities(true).then((a) => {
         activityList = a;
         drawAdmin();
         makePopup(`Successfully created ${activityName}!`);
@@ -256,7 +209,7 @@ function deleteActivity(id) {
   .then(res => res.status)
   .then(code => {
     if (code === 200) {
-      getActivities().then((a) => {
+      getActivities(true).then((a) => {
         activityList = a;
         drawAdmin();
         makePopup(`Successfully deleted ${id}.`);
@@ -293,7 +246,7 @@ async function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
 
   myGrade = await getGrade(decoded.sub);
-  activityList = await getActivities();
+  activityList = await getActivities(decoded.sub.includes("@charleswright.org"));
     document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
     // Hide google sign in, show log out
@@ -326,8 +279,13 @@ async function getGrade(email) {
   .then(data => data.grade);
 }
 
-async function getActivities() {
-  return fetch('https://aitoolft.com/api/admin/elective/getall', {
+/**
+ * 
+ * @param {Boolean} isAdmin Whether the user is an admin
+ * @returns 
+ */
+async function getActivities(isAdmin) {
+  return fetch(`https://aitoolft.com/api/${isAdmin ? 'admin' : 'students'}/elective/getall`, {
     method: 'GET',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
   })
