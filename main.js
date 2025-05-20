@@ -1,65 +1,38 @@
+// Filled by functions
 let activityList = [];
-  /*{
-    name: "Cool Kid Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 20,
-  },
-  {
-    name: "Lorem Ipsum Club",
-    grades: [7, 8],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 10,
-  },
-  {
-    name: "Fifth Grade Only Club",
-    grades: [5],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 20,
-  },
-  {
-    name: "Crumbl Cookie Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 18,
-    totalSpots: 20,
-  },
-  {
-    name: "Another Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 19,
-    totalSpots: 20,
-  },
-  {
-    name: "A Third Club",
-    grades: [6, 7],
-    rank: null,
-    filledSpots: 15,
-    totalSpots: 20,
-  },
-  {
-    name: "Qwertyuiop Club",
-    grades: [6, 7, 8],
-    rank: null,
-    filledSpots: 5,
-    totalSpots: 20,
-  },
-  {
-    name: "Asdf Club",
-    grades: [5, 6, 7, 8],
-    rank: null,
-    filledSpots: 17,
-    totalSpots: 17,
-  },*/
-
 let myGrade;
+
 const studentDiv = document.getElementById('student');
 const adminDiv = document.getElementById('admin');
 
+// Needed as loginCallback, which Google calls, needs to be a global function or something idk
+window.loginCallback = loginCallback;
+
+// On startup, if user has a token in localStorage
+if (localStorage.getItem('JWTToken') !== null) {
+  // Check token for validity
+  fetch('https://aitoolft.com/api/auth/validate', {
+    method: 'GET',
+    headers: {'Authorization': "Bearer " + localStorage.getItem('JWTToken')},
+  })
+  .then(res => res.status)
+  .then(code => {
+    if (code === 200) {
+      handleLogin(localStorage.getItem('JWTToken'));
+    }
+    if (code === 401) {
+      logout();
+    }
+  });
+}
+
+document.getElementById('logout').addEventListener('click', logout, false);
+
+/**
+ * Called following student login from handleLogin, either from loginCallback or webpage load. 
+ * Also called to refresh screen following data update (fetch load, click, etc.)
+ * Also called when admin chooses to see student view
+ */
 function drawStudent() {
   adminDiv.innerHTML = "";
   studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
@@ -81,17 +54,17 @@ function drawStudent() {
 
     let ele = document.createElement('div');
     if (e.grade.includes(myGrade) && 0 !== e.limit) {
-      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - 0} spot${e.limit - 0 === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
       document.getElementById('activity-wrapper').prepend(ele);
     } else {
-      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - 0} spot${e.limit - 0 === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
       ele.className = 'cannotSelect';
       document.getElementById('activity-wrapper').append(ele);
     }
   });
-  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quater. You cannot select a club you've already taken, or one that's not available for your grade.`;
+  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quarter. You cannot select a club you've already taken, or one that's not available for your grade.`;
   
   let btn = document.createElement('button');
   btn.id = 'student-submit';
@@ -100,6 +73,11 @@ function drawStudent() {
   studentDiv.appendChild(btn);  
 }
 
+/**
+ * Called on student activity option click
+ * @param {Number} index The index of the activity in activityList the student clicked
+ * @returns Nothing
+ */
 function setRank(index) {
   let cur = activityList[index];
 
@@ -119,12 +97,36 @@ function setRank(index) {
   drawStudent();
 }
 
+/**
+ * Called when student hits submit, POSTs the result to server
+ */
 function studentSubmit() {
-  document.writeln('To go to server<br><br>{<br>token: ' + localStorage.getItem('JWTToken') + '<br>rankedChoices: [');
-  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e) => {document.writeln(`${e.id},`)});
-  document.writeln('],<br>}');
+  let object = {electives: [],}
+  activityList
+  .filter((e) => e.rank !== null)
+  .sort((a, b) => a.rank - b.rank)
+  .forEach((e) => {object.electives.push(e.id);});
+
+  fetch('https://aitoolft.com/api/students/submit', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
+    body: JSON.stringify(object),
+  })
+  .then(res => res.status)
+  .then(code => {
+    if (code === 200) {
+      makePopup(`Successfuly submitted your activity choices!`);
+    } else {
+      makePopup('An error occurred: Code ' + code);
+    }
+  });
+  
 }
 
+/**
+ * Called following admin login from handleLogin, either from loginCallback or webpage load. 
+ * Also called to refresh screen following data update (activity creation/deletion, etc.)
+ */
 function drawAdmin() {
   adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent()" id="view-student">View Student Interface</button></div>`;
   studentDiv.innerHTML = "";
@@ -146,13 +148,21 @@ function drawAdmin() {
 
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
-    ele.innerHTML = `<span class="admin-choice-name">${e.name}</span> <span class="admin-choice-id">${e.id}</span> <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span><br>${wordGrade}<br>${e.limit - 0} spots left, ${0} signed up (max ${e.limit})<div class="studentList"></div>`;
+    ele.innerHTML = `
+      <span class="admin-choice-name">${e.name}</span>
+      <span class="admin-choice-id">${e.id}</span>
+      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
+      <br>${wordGrade}<br>${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})
+      <div class="studentList">${e.students.join('<br>')}</div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
   document.getElementById('activity-add').addEventListener('click', showAddActivity, false);
   document.getElementById("message").innerHTML = `Manage activites, add activities, below. Use the blue button on the right to add activites.`;        
 }
 
+/**
+ * Called when Add Activity button's clicked, literally adds the HTML for the form to the sidebar
+ */
 function showAddActivity() {
   document.getElementById('sidebar').innerHTML += `
     <label for="activity-name">Activity Name:</label>
@@ -176,6 +186,10 @@ function showAddActivity() {
   document.getElementById('activity-submit').addEventListener('click', handleAddActivity, false);
 }
 
+/**
+ * Called when admin submits form to create new activity, gets HTML stuff and POSTs it
+ * @returns Nothing
+ */
 function handleAddActivity() {
   let gradeList = [];
   document.getElementById('5').checked ? gradeList.push(5) : '';
@@ -213,8 +227,8 @@ function handleAddActivity() {
   .then(res => res.status)
   .then(code => {
     if (code === 200) {
-      // getActivities is async, we need another nested dot then for after it's done
-      getActivities().then((a) => {
+      // getActivities is async net request, we need another nested dot then for after it's done
+      getActivities(true).then((a) => {
         activityList = a;
         drawAdmin();
         makePopup(`Successfully created ${activityName}!`);
@@ -225,6 +239,10 @@ function handleAddActivity() {
   });
 }
 
+/**
+ * Takes an ID to delete an activity, called by delete button
+ * @param {String} id The ID of the activity to be deleted
+ */
 function deleteActivity(id) {
   fetch('https://aitoolft.com/api/admin/elective/delete', {
     method: 'POST',
@@ -234,7 +252,7 @@ function deleteActivity(id) {
   .then(res => res.status)
   .then(code => {
     if (code === 200) {
-      getActivities().then((a) => {
+      getActivities(true).then((a) => {
         activityList = a;
         drawAdmin();
         makePopup(`Successfully deleted ${id}.`);
@@ -245,7 +263,10 @@ function deleteActivity(id) {
   });
 }
 
-// After Google login flow
+/**
+ * After Google login flow, google callback. This function is made global.
+ * @param {Object} response Response object from server with smaller JWT and other stuff
+ */
 function loginCallback(response) {
   // Don't decode
   const decoded = response.credential;
@@ -265,13 +286,17 @@ function loginCallback(response) {
     handleLogin(data.token);
   });
 }
-
-// Called when logged in (or loaded and logged in) and server-side validated
+ 
+/**
+ * Called when logged in (or loaded and logged in) and server-side validated, calls drawStudent/Admin
+ * @param {String} jwt JWT token
+ * @returns Nothing
+ */
 async function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
-  const email = decoded.sub;
-  myGrade = await getGrade(email);
-  activityList = await getActivities(email);
+
+  myGrade = await getGrade(decoded.sub);
+  activityList = await getActivities(decoded.sub.includes("@charleswright.org"));
     document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
     // Hide google sign in, show log out
@@ -291,6 +316,11 @@ async function handleLogin(jwt) {
     }
 }
 
+/**
+ * Fetch request to get the user's grade
+ * @param {String} email User's email
+ * @returns The user's grade, as a number. Default is 6 
+ */
 async function getGrade(email) {
   return fetch(`https://aitoolft.com/api/students/info?email=${email}`, {method: 'GET'}) 
   .then(res => {
@@ -304,8 +334,13 @@ async function getGrade(email) {
   .then(data => data.grade);
 }
 
-async function getActivities() {
-  return fetch(email.includes("@charleswright.org") ? 'https://aitoolft.com/api/admin/elective/getall' : 'https://aitoolft.com/api/students/elective/getall', {
+/**
+ * Gets the 
+ * @param {Boolean} isAdmin Whether the user is an admin
+ * @returns An array of objects, each w/ info about an activity
+ */
+async function getActivities(isAdmin) {
+  return fetch(`https://aitoolft.com/api/${isAdmin ? 'admin' : 'students'}/elective/getall`, {
     method: 'GET',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
   })
@@ -319,7 +354,12 @@ async function getActivities() {
   .then(data => {data.forEach((e) => e.rank = null); return data;});
 }
 
-// Shamelessly stolen from Google, all rights to them or whatever
+/**
+ * Takes JWT Token, spits out important stuff
+ * Shamelessly stolen from Google, all rights to them or whatever
+ * @param {String} token JWT Token
+ * @returns 
+ */
 function decodeJwtResponse(token) {
   let base64Url = token.split('.')[1];
   let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -330,13 +370,16 @@ function decodeJwtResponse(token) {
   return JSON.parse(jsonPayload);
 }
 
+/**
+ * Deletes saved stuff and reloads, called on. log out or invalid JWT
+ */
 function logout() {
   localStorage.clear();
   location.reload();
 }
 
 /**
- * 
+ * Makes a customizable popup appear on-screen
  * @param {String} message The message shown to the user.
  * @param {boolean} showCancel Whether to show the cancel button or not
  * @param {String} confirmAction The action taken following an ok button press
@@ -350,27 +393,3 @@ function makePopup(message, showCancel, confirmAction) {
   document.getElementById('popup-ok').setAttribute('onclick', `document.getElementById('popup').style.display = 'none';${confirmAction}`);
   popup.style.display = 'block';
 }
-
-// Needed as loginCallback, which Google calls, needs to be a global function or something idk
-window.loginCallback = loginCallback;
-
-// On startup, if user is 
-if (localStorage.getItem('JWTToken') !== null) {
-  // Check token for validity
-  fetch('https://aitoolft.com/api/auth/validate', {
-    method: 'GET',
-    headers: {'Authorization': "Bearer " + localStorage.getItem('JWTToken')},
-  })
-  .then(res => res.status)
-  .then(code => {
-    if (code === 200) {
-      handleLogin(localStorage.getItem('JWTToken'));
-    }
-    if (code === 401) {
-      logout();
-    }
-  });
-}
-
-document.getElementById('logout').addEventListener('click', logout, false);
-
