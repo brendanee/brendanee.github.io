@@ -5,8 +5,33 @@ let myGrade;
 const studentDiv = document.getElementById('student');
 const adminDiv = document.getElementById('admin');
 
+// Needed as loginCallback, which Google calls, needs to be a global function or something idk
+window.loginCallback = loginCallback;
+
+// On startup, if user has a token in localStorage
+if (localStorage.getItem('JWTToken') !== null) {
+  // Check token for validity
+  fetch('https://aitoolft.com/api/auth/validate', {
+    method: 'GET',
+    headers: {'Authorization': "Bearer " + localStorage.getItem('JWTToken')},
+  })
+  .then(res => res.status)
+  .then(code => {
+    if (code === 200) {
+      handleLogin(localStorage.getItem('JWTToken'));
+    }
+    if (code === 401) {
+      logout();
+    }
+  });
+}
+
+document.getElementById('logout').addEventListener('click', logout, false);
+
 /**
- * Called following student login from handleLogin, either from loginCallback or webpage load. Also called to refresh screen following data update (fetch load, click, etc.)
+ * Called following student login from handleLogin, either from loginCallback or webpage load. 
+ * Also called to refresh screen following data update (fetch load, click, etc.)
+ * Also called when admin chooses to see student view
  */
 function drawStudent() {
   adminDiv.innerHTML = "";
@@ -72,6 +97,9 @@ function setRank(index) {
   drawStudent();
 }
 
+/**
+ * Called when student hits submit, POSTs the result to server
+ */
 function studentSubmit() {
   let object = {electives: [],}
   activityList
@@ -95,6 +123,10 @@ function studentSubmit() {
   
 }
 
+/**
+ * Called following admin login from handleLogin, either from loginCallback or webpage load. 
+ * Also called to refresh screen following data update (activity creation/deletion, etc.)
+ */
 function drawAdmin() {
   adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent()" id="view-student">View Student Interface</button></div>`;
   studentDiv.innerHTML = "";
@@ -128,6 +160,9 @@ function drawAdmin() {
   document.getElementById("message").innerHTML = `Manage activites, add activities, below. Use the blue button on the right to add activites.`;        
 }
 
+/**
+ * Called when Add Activity button's clicked, literally adds the HTML for the form to the sidebar
+ */
 function showAddActivity() {
   document.getElementById('sidebar').innerHTML += `
     <label for="activity-name">Activity Name:</label>
@@ -151,6 +186,10 @@ function showAddActivity() {
   document.getElementById('activity-submit').addEventListener('click', handleAddActivity, false);
 }
 
+/**
+ * Called when admin submits form to create new activity, gets HTML stuff and POSTs it
+ * @returns Nothing
+ */
 function handleAddActivity() {
   let gradeList = [];
   document.getElementById('5').checked ? gradeList.push(5) : '';
@@ -200,6 +239,10 @@ function handleAddActivity() {
   });
 }
 
+/**
+ * Takes an ID to delete an activity, called by delete button
+ * @param {String} id The ID of the activity to be deleted
+ */
 function deleteActivity(id) {
   fetch('https://aitoolft.com/api/admin/elective/delete', {
     method: 'POST',
@@ -220,7 +263,10 @@ function deleteActivity(id) {
   });
 }
 
-// After Google login flow
+/**
+ * After Google login flow, google callback. This function is made global.
+ * @param {Object} response Response object from server with smaller JWT and other stuff
+ */
 function loginCallback(response) {
   // Don't decode
   const decoded = response.credential;
@@ -240,8 +286,12 @@ function loginCallback(response) {
     handleLogin(data.token);
   });
 }
-
-// Called when logged in (or loaded and logged in) and server-side validated
+ 
+/**
+ * Called when logged in (or loaded and logged in) and server-side validated, calls drawStudent/Admin
+ * @param {String} jwt JWT token
+ * @returns Nothing
+ */
 async function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
 
@@ -266,6 +316,11 @@ async function handleLogin(jwt) {
     }
 }
 
+/**
+ * Fetch request to get the user's grade
+ * @param {String} email User's email
+ * @returns The user's grade, as a number. Default is 6 
+ */
 async function getGrade(email) {
   return fetch(`https://aitoolft.com/api/students/info?email=${email}`, {method: 'GET'}) 
   .then(res => {
@@ -280,9 +335,9 @@ async function getGrade(email) {
 }
 
 /**
- * 
+ * Gets the 
  * @param {Boolean} isAdmin Whether the user is an admin
- * @returns 
+ * @returns An array of objects, each w/ info about an activity
  */
 async function getActivities(isAdmin) {
   return fetch(`https://aitoolft.com/api/${isAdmin ? 'admin' : 'students'}/elective/getall`, {
@@ -299,7 +354,12 @@ async function getActivities(isAdmin) {
   .then(data => {data.forEach((e) => e.rank = null); return data;});
 }
 
-// Shamelessly stolen from Google, all rights to them or whatever
+/**
+ * Takes JWT Token, spits out important stuff
+ * Shamelessly stolen from Google, all rights to them or whatever
+ * @param {String} token JWT Token
+ * @returns 
+ */
 function decodeJwtResponse(token) {
   let base64Url = token.split('.')[1];
   let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -310,13 +370,16 @@ function decodeJwtResponse(token) {
   return JSON.parse(jsonPayload);
 }
 
+/**
+ * Deletes saved stuff and reloads, called on. log out or invalid JWT
+ */
 function logout() {
   localStorage.clear();
   location.reload();
 }
 
 /**
- * 
+ * Makes a customizable popup appear on-screen
  * @param {String} message The message shown to the user.
  * @param {boolean} showCancel Whether to show the cancel button or not
  * @param {String} confirmAction The action taken following an ok button press
@@ -330,27 +393,3 @@ function makePopup(message, showCancel, confirmAction) {
   document.getElementById('popup-ok').setAttribute('onclick', `document.getElementById('popup').style.display = 'none';${confirmAction}`);
   popup.style.display = 'block';
 }
-
-// Needed as loginCallback, which Google calls, needs to be a global function or something idk
-window.loginCallback = loginCallback;
-
-// On startup, if user is 
-if (localStorage.getItem('JWTToken') !== null) {
-  // Check token for validity
-  fetch('https://aitoolft.com/api/auth/validate', {
-    method: 'GET',
-    headers: {'Authorization': "Bearer " + localStorage.getItem('JWTToken')},
-  })
-  .then(res => res.status)
-  .then(code => {
-    if (code === 200) {
-      handleLogin(localStorage.getItem('JWTToken'));
-    }
-    if (code === 401) {
-      logout();
-    }
-  });
-}
-
-document.getElementById('logout').addEventListener('click', logout, false);
-
