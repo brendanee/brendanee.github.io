@@ -23,7 +23,8 @@ if (localStorage.getItem('JWTToken') !== null) {
     if (code === 401) {
       logout();
     }
-  });
+  })
+  .catch((e) => {makePopup('Error while logging in: ' + e);});
 }
 
 document.getElementById('logout').addEventListener('click', logout, false);
@@ -304,13 +305,13 @@ async function handleLogin(jwt) {
     document.getElementById('logout').style.display = 'block';
 
     // User is an admin
-    if (email.includes("@charleswright.org")) {
+    if (decoded.sub.includes("@charleswright.org")) {
       drawAdmin();
       return;
     } 
 
     // User is an student
-    if (email.includes("@tarriers.org")) {
+    if (decoded.sub.includes("@tarriers.org")) {
       drawStudent();
       return;
     }
