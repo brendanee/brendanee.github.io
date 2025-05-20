@@ -34,7 +34,9 @@ document.getElementById('logout').addEventListener('click', logout, false);
  * Also called to refresh screen following data update (fetch load, click, etc.)
  * Also called when admin chooses to see student view
  */
-function drawStudent() {
+async function drawStudent() {
+  activityList = await getActivities(false);
+
   adminDiv.innerHTML = "";
   studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
   document.querySelector('html').className = '';
@@ -128,32 +130,37 @@ function studentSubmit() {
  * Called following admin login from handleLogin, either from loginCallback or webpage load. 
  * Also called to refresh screen following data update (activity creation/deletion, etc.)
  */
-function drawAdmin() {
+async function drawAdmin() {
+  activityList = await getActivities(true);
+
   adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent()" id="view-student">View Student Interface</button></div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
   activityList.forEach((e, i) => {
-    let wordGrade = "";
+    let formattedGrade = "";
     switch (e.grade.length) {
       case 1:
-        wordGrade = e.grade + "th Grade Only";
+        formattedGrade = e.grade + " Only";
         break;
-      case 4:
-        wordGrade = "All Grades";
+      case 2:
+        formattedGrade = e.grade[0] + " & " + e.grade[1];
         break;
       default:
-        wordGrade = "Grades " + e.grade;
+        formattedGrade = e.grade.join(" ");
         break;
     }
 
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
     ele.innerHTML = `
-      <span class="admin-choice-name">${e.name}</span>
+      <span class="admin-choice-name">${e.name}</span><b>${formattedGrade}</b>
+      <br>
       <span class="admin-choice-id">${e.id}</span>
       <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
-      <br>${wordGrade}<br>${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})
+      <br>
+      ${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})
+      <br>
       <div class="studentList">${e.students.join('<br>')}</div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
@@ -295,26 +302,26 @@ function loginCallback(response) {
  */
 async function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
+  const email = decoded.sub;
+  myGrade = await getGrade(email);
 
-  myGrade = await getGrade(decoded.sub);
-  activityList = await getActivities(decoded.sub.includes("@charleswright.org"));
-    document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
+  document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
-    // Hide google sign in, show log out
-    document.getElementById('google-wrapper').style.display = 'none';
-    document.getElementById('logout').style.display = 'block';
+  // Hide google sign in, show log out
+  document.getElementById('google-wrapper').style.display = 'none';
+  document.getElementById('logout').style.display = 'block';
 
-    // User is an admin
-    if (decoded.sub.includes("@charleswright.org")) {
-      drawAdmin();
-      return;
-    } 
+  // User is an admin
+  if (email.includes("@charleswright.org")) {
+    drawAdmin();
+    return;
+  } 
 
-    // User is an student
-    if (decoded.sub.includes("@tarriers.org")) {
-      drawStudent();
-      return;
-    }
+  // User is an student
+  if (email.includes("@tarriers.org")) {
+    drawStudent();
+    return;
+  }
 }
 
 /**
