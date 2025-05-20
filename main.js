@@ -124,7 +124,8 @@ function studentSubmit() {
     } else {
       makePopup('An error occurred: Code ' + code);
     }
-  });
+  })
+  .catch((e) => makePopup('An error occured: ' + e));
   
 }
 
