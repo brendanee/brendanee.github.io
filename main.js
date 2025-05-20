@@ -139,27 +139,22 @@ async function drawAdmin() {
 
   activityList.forEach((e, i) => {
     let formattedGrade = "";
-    switch (e.grade.length) {
-      case 1:
-        formattedGrade = e.grade + " Only";
-        break;
-      case 2:
-        formattedGrade = e.grade[0] + " & " + e.grade[1];
-        break;
-      default:
-        formattedGrade = e.grade.join(" ");
-        break;
+    if (e.grade.length === 2){
+      formattedGrade = e.grade[0] + "<br>&<br>" + e.grade[1];
+    } else {
+      formattedGrade = e.grade.join("<br>");
     }
 
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
     ele.innerHTML = `
-      <span class="admin-choice-name">${e.name}</span><b>${formattedGrade}</b>
+      <span class="admin-choice-grade">${formattedGrade}</span>
+      <span class="admin-choice-name">${e.name}</span>
       <br>
       <span class="admin-choice-id">${e.id}</span>
-      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
       <br>
       ${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})
+      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
       <br>
       <div class="studentList">${e.students.join('<br>')}</div>`;
     document.getElementById('admin-activity-wrapper').append(ele);
