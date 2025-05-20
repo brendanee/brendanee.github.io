@@ -120,9 +120,9 @@ function setRank(index) {
 }
 
 function studentSubmit() {
-  document.writeln(`Pretend this is a message to the server<br><br>`);
-  document.writeln('token: ' + localStorage.getItem('JWTToken') + '<br>');
-  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e, i) => {document.writeln(`choice #${i}: ${e.name}<br>`)});
+  document.writeln('To go to server<br><br>{<br>token: ' + localStorage.getItem('JWTToken') + '<br>rankedChoices: [');
+  activityList.filter((e) => e.rank !== null).sort((a, b) => a.rank - b.rank) .forEach((e) => {document.writeln(`${e.id},`)});
+  document.writeln('],<br>}');
 }
 
 function drawAdmin() {
@@ -195,7 +195,7 @@ function handleAddActivity() {
     return;
   }
   if (limit < 1) {
-    makePopup('Maximun number of students cannot be blank or zero. If activity has no participant limit, enter a large number.');
+    makePopup('Maximum number of students cannot be blank or zero. If activity has no participant limit, enter a large number.');
     return;
   }
   let object = {
@@ -269,9 +269,9 @@ function loginCallback(response) {
 // Called when logged in (or loaded and logged in) and server-side validated
 async function handleLogin(jwt) {
   const decoded = decodeJwtResponse(jwt);
-
-  myGrade = await getGrade(decoded.sub);
-  activityList = await getActivities();
+  const email = decoded.sub;
+  myGrade = await getGrade(email);
+  activityList = await getActivities(email);
     document.getElementById('header-message').innerHTML = `Welcome, ${localStorage.getItem('name')}!`;
 
     // Hide google sign in, show log out
@@ -279,13 +279,13 @@ async function handleLogin(jwt) {
     document.getElementById('logout').style.display = 'block';
 
     // User is an admin
-    if (decoded.sub.includes("@charleswright.org")) {
+    if (email.includes("@charleswright.org")) {
       drawAdmin();
       return;
     } 
 
     // User is an student
-    if (decoded.sub.includes("@tarriers.org")) {
+    if (email.includes("@tarriers.org")) {
       drawStudent();
       return;
     }
@@ -305,7 +305,7 @@ async function getGrade(email) {
 }
 
 async function getActivities() {
-  return fetch('https://aitoolft.com/api/admin/elective/getall', {
+  return fetch(email.includes("@charleswright.org") ? 'https://aitoolft.com/api/admin/elective/getall' : 'https://aitoolft.com/api/students/elective/getall', {
     method: 'GET',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
   })
