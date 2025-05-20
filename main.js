@@ -33,9 +33,11 @@ document.getElementById('logout').addEventListener('click', logout, false);
  * Called following student login from handleLogin, either from loginCallback or webpage load. 
  * Also called to refresh screen following data update (fetch load, click, etc.)
  * Also called when admin chooses to see student view
+ * 
+ * @param {Boolean} refreshActivity Whether or not to refresh the activityList, deleting rank data
  */
-async function drawStudent() {
-  activityList = await getActivities(false);
+async function drawStudent(refreshActivity) {
+  if (refreshActivity) {activityList = await getActivities(false)};
 
   adminDiv.innerHTML = "";
   studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
@@ -81,7 +83,7 @@ async function drawStudent() {
  * @param {Number} index The index of the activity in activityList the student clicked
  * @returns Nothing
  */
-function setRank(index) {
+async function setRank(index) {
   let cur = activityList[index];
 
   if (cur.rank === null) {
@@ -97,7 +99,7 @@ function setRank(index) {
   } else {
     cur.rank = null;
   }
-  drawStudent();
+  drawStudent(false);
 }
 
 /**
@@ -133,7 +135,7 @@ function studentSubmit() {
 async function drawAdmin() {
   activityList = await getActivities(true);
 
-  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent()" id="view-student">View Student Interface</button></div>`;
+  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent(true)" id="view-student">View Student Interface</button></div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
@@ -314,7 +316,7 @@ async function handleLogin(jwt) {
 
   // User is an student
   if (email.includes("@tarriers.org")) {
-    drawStudent();
+    drawStudent(true);
     return;
   }
 }
