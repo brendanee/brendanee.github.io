@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 
+/*
+Rough order of style stuff:
+1. High level element styling
+2. Header bar/persistent styling
+3. Student-side styling, roughly big to small
+4. Admin-side styling, roughly big to small
+Then random
+*/
+
+/* 1. High level element styling */
 html {
   text-align: center;
   font-family: Verdana, sans-serif;
@@ -12,10 +22,11 @@ html {
 
 body {
   display: block;
-  margin: 50px 0 0 0;
+  margin: 60px 0 0 0;
 }
 
 h1 {
+  margin: 0;
   padding: 0;
   text-align: center;
   font-size: 70px;
@@ -23,9 +34,39 @@ h1 {
   color: var(--green);
 }
 
-.admin h1 {
-  margin-top: 60px;
-  font-size: 30px;
+header {
+  padding: 5px 10px;
+  width: calc(100% - 20px);
+  height: 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-bottom: 3px solid var(--light-green);
+  box-shadow: var(--light-green) 0 0 20px -5px;
+}
+
+
+footer {
+  position: relative;
+  bottom: 0;
+}
+
+main {
+  min-height: calc(100vh - 100px);
+}
+
+/* 2. Header bar/persistent styling */
+img {
+  height: 40px;
+  float: left;
+  margin-right: 10px;
+}
+
+#header-message {
+  float: left;
+  height: 40px;
+  line-height: 40px;
 }
 
 #google-wrapper {
@@ -34,12 +75,29 @@ h1 {
   width: 227px;
 }
 
-#activity-wrapper {
+#logout {
+  padding: 8px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  background-color: var(--green);
+  color: white;
+  font-family: Montserrat, sans-serif;
+  margin: auto;
+  border: none;
+  /*Assuming no log in*/
+  display: none;
+  cursor: pointer;
+  float: right;
+}
+
+/* 3. Student-side styling, roughly big to small */
+#student-wrapper {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
 
+/* All possible activity button options */
 .isRanked, .isNotRanked, .cannotSelect {
   flex-basis: 300px;
   padding: 20px;
@@ -50,6 +108,21 @@ h1 {
   cursor: pointer;
 }
 
+.isRanked {
+  box-shadow: var(--green) 0 0 5px 0;
+}
+
+.cannotSelect {
+  border-color: grey;
+  color: grey;
+  text-decoration: line-through;
+}
+
+.isNotRanked {
+  box-shadow: var(--green) 0 0 10px -5px;
+}
+
+/* Grey outline/number itself */
 .rank {
   width: 50px;
   height: 50px;
@@ -68,59 +141,8 @@ h1 {
   color: white;
 }
 
-.cannotSelect {
-  border-color: grey;
-  color: grey;
-  text-decoration: line-through;
-}
-
 .cannotSelect .rank {
   border: 2px solid grey;
-}
-
-img {
-  height: 40px;
-  float: left;
-  margin-right: 10px;
-}
-
-.admin-choice {
-  padding: 5px;
-  border: 2px solid var(--green);
-  border-radius: 5px;
-  margin-bottom: 10px;
-  flex-basis: 500px;
-  margin: 5px;
-  flex-grow: 1;
-  text-align: left;
-}
-
-.admin-choice-name {
-  font-family: Montserrat, sans-serif;
-  font-size: 24px;
-  max-width: 300px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.admin-choice-id {
-  color: grey;
-}
-
-.admin-choice-delete {
-  color: var(--orange);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.admin-choice-grade {
-    font-family: Montserrat, sans-serif;
-    font-size: 26px;
-    line-height: 0.8;
-  float: right;
-  width: 15px;
-  color: var(--blue);
 }
 
 #student-submit {
@@ -134,59 +156,10 @@ img {
   border: none;
 }
 
-#logout {
-  padding: 8px 20px;
-  border-radius: 5px;
-  font-size: 18px;
-  background-color: var(--green);
-  color: white;
-  font-family: Montserrat, sans-serif;
-  margin: auto;
-  border: none;
-  /*Assuming no log in*/
-  display: none;
-  cursor: pointer;
-  float: right;
-}
-
-header {
-  padding: 5px 10px;
-  width: calc(100% - 20px);
-  height: 40px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: white;
-  border-bottom: 3px solid var(--light-green);
-}
-
-.admin #message {
-  margin: 0;
-}
-
-#header-message {
-  float: left;
-  height: 40px;
-  line-height: 40px;
-}
-
-footer {
-  position: relative;
-  bottom: 0;
-}
-
-main {
-  min-height: calc(100vh - 100px);
-}
-
+/* 4. Admin-side styling, roughly big to small */
 #admin {
   height: 100%;
   padding: 5px;
-}
-
-#admin > #activity-wrapper {
-  width: 70%;
-  float: left;
 }
 
 #sidebar {
@@ -209,6 +182,14 @@ main {
   flex-wrap: wrap;
 }
 
+.admin h1 {
+  font-size: 30px;
+}
+
+.admin #message {
+  margin: 0;
+}
+
 button {
   color: white;
   padding: 8px;
@@ -217,6 +198,11 @@ button {
   border: none;
   font-size: 20px;
   font-family: Montserrat;
+}
+
+button:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 
 #sidebar > button {
@@ -232,8 +218,52 @@ button {
   background-color: var(--light-green);
 }
 
+.admin-choice {
+  padding: 5px;
+  border: 2px solid var(--green);
+  border-radius: 5px;
+  margin-bottom: 10px;
+  flex-basis: 500px;
+  margin: 5px;
+  flex-grow: 1;
+  text-align: left;
+  box-shadow: var(--green) 0 0 10px -5px;
+}
+
+.admin-choice-name {
+  font-family: Montserrat, sans-serif;
+  font-size: 24px;
+  max-width: 300px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-choice-id {
+  color: grey;
+}
+
+.admin-choice-delete {
+  color: var(--orange);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-choice-grade {
+  display: flex;
+  align-items: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 26px;
+  height: 100%;
+  line-height: 0.85;
+  float: right;
+  width: 15px;
+  color: var(--blue);
+}
+
 #popup {
-  display: none;;
+  display: none;
   position: fixed;
   top: calc(50% - 100px);
   left: calc(50% - 225px);
@@ -243,6 +273,7 @@ button {
   border-radius: 10px;
   border: 3px solid var(--blue);
   padding: 20px;
+  box-shadow: var(--blue) 0 0 50px -15px;
 }
 
 #popup-ok {
@@ -254,6 +285,7 @@ button {
 
 #popup-cancel {
   left: 20px;
+  color: var(--green);
   background-color: white;
   border: 3px solid var(--green);
 }
@@ -286,5 +318,4 @@ input[type="checkbox"] {
   accent-color: var(--green);
   height: 20px;
   width: 20px;
-
 }

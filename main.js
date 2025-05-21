@@ -40,7 +40,7 @@ async function drawStudent(refreshActivity) {
   if (refreshActivity) {activityList = await getActivities(false)};
 
   adminDiv.innerHTML = "";
-  studentDiv.innerHTML =  `<div id="activity-wrapper"></div>`;
+  studentDiv.innerHTML =  `<div id="student-wrapper"></div>`;
   document.querySelector('html').className = '';
 
   activityList.forEach((e, i) => {
@@ -62,14 +62,14 @@ async function drawStudent(refreshActivity) {
       ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
-      document.getElementById('activity-wrapper').prepend(ele);
+      document.getElementById('student-wrapper').prepend(ele);
     } else {
       ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
       ele.className = 'cannotSelect';
-      document.getElementById('activity-wrapper').append(ele);
+      document.getElementById('student-wrapper').append(ele);
     }
   });
-  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs this quarter. You cannot select a club you've already taken, or one that's not available for your grade.`;
+  document.getElementById("message").innerHTML = `Rank your <strong>TOP FOUR</strong> choices for clubs. You cannot select a club you've already taken, or one that's not available for your grade.`;
   
   let btn = document.createElement('button');
   btn.id = 'student-submit';
@@ -140,7 +140,7 @@ async function drawAdmin() {
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
-  activityList.forEach((e, i) => {
+  activityList.forEach((e) => {
     let formattedGrade = "";
     if (e.grade.length === 2){
       formattedGrade = e.grade[0] + "<br>&<br>" + e.grade[1];
@@ -151,7 +151,7 @@ async function drawAdmin() {
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
     ele.innerHTML = `
-      <span class="admin-choice-grade">${formattedGrade}</span>
+      <div class="admin-choice-grade">${formattedGrade}</div>
       <span class="admin-choice-name">${e.name}</span>
       <br>
       <span class="admin-choice-id">${e.id}</span>
@@ -242,7 +242,8 @@ function handleAddActivity() {
     } else {
       makePopup('An error occurred: Code ' + code);
     }
-  });
+  })
+  .catch(e => makePopup("An error ocurred: " + e));
 }
 
 /**

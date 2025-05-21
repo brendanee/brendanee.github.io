@@ -1,12 +1,14 @@
-<!DOCTYPE html >
+<!DOCTYPE html>
 <html lang="en">
 <head>
+     <meta charset="utf-8">
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="Content-Security-Policy" content="frame-src https://accounts.google.com/gsi/; connect-src *;">
+     <!-- To allow Google sign in to work -->
+	<meta http-equiv="Content-Security-Policy" content="frame-src https://accounts.google.com/gsi/;">
 	<meta http-equiv="Cross-Origin-Opener-Policy" content="unsafe-none">
 	<title>CWA Middle School Activity Sign-Up</title>
-	<link rel="icon" href="./assets/favicon.ico">
+	<link rel="icon" href="./martlet.ico">
 	<link rel="stylesheet" href="./activity.css">
 </head>
 <body>
@@ -40,6 +42,7 @@
 </main>
 <footer>Site made by Soul Yang '27, Joon In '27, and Brendan Ee '26!</footer>
 <div id="popup"></div>
+<!-- Testing only, when finished, will be removed, and server-side checks will be re-enabled -->
 <div style="position: fixed; bottom: 0; left: 0; background-color: red; padding: 10px;"><button style="all: revert !important;" onclick="drawAdmin()">DEBUG: Show Admin View</button></div>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script src="./main.js"></script>
