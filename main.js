@@ -1,4 +1,4 @@
-const backendURL = 'aitoolft.com';
+const backendURL = 'middleschool-514609687600.us-west1.run.app';
 const studentDiv = document.getElementById('student');
 const adminDiv = document.getElementById('admin');
 
