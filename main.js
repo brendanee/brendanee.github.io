@@ -137,7 +137,13 @@ function studentSubmit() {
 async function drawAdmin() {
   activityList = await getActivities(true);
 
-  adminDiv.innerHTML =  `<div id="admin-activity-wrapper"></div><div id="sidebar"><button id="activity-add"><b>+</b> Add Activity</button><button onclick="drawStudent(true)" id="view-student">View Student Interface</button></div>`;
+  adminDiv.innerHTML =  `
+    <div id="admin-activity-wrapper"></div>
+    <div id="sidebar">
+      <button id="activity-add"><b>+</b> Add Activity</button>
+      <button onclick="drawStudent(true)" id="view-student">View Student Interface</button>
+      <button onclick="makePopup('All about this little piece of code! Will be expanded later, and include links and resources for at some point, and a link to relavent Google Sheets/stuff');" id="admin-about">About</button>
+    </div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
 
@@ -171,25 +177,28 @@ async function drawAdmin() {
  * Called when Add Activity button's clicked, literally adds the HTML for the form to the sidebar
  */
 function showAddActivity() {
-  document.getElementById('sidebar').innerHTML += `
-    <label for="activity-name">Activity Name:</label>
-    <input type="text" placeholder="i.e. Cool Kid's Club" name="activity-name" id="activity-name">
-    <label for="activity-id">Veracross ID:</label>
-    <input type="text" placeholder="i.e. MATH:3900" name="activity-id" id="activity-id">
-    <label for="total-spots">Maximum participants:</label>
-    <input type="number" placeholder="i.e. 15" name="total-spots" id="total-spots">
-    Allowed Grades:<br>
-    <label for="5">5th</label>
-    <input checked type="checkbox" name="5" id="5">
-    <label for="6">6th</label>
-    <input checked type="checkbox" name="6" id="6">
-    <br>
-    <label for="7">7th</label>
-    <input checked type="checkbox" name="7" id="7">
-    <label for="8">8th</label>
-    <input checked type="checkbox" name="8" id="8"><br>
-    <button id="activity-submit">Submit Activity</button>
-  `;
+  document.getElementById('sidebar').innerHTML = `
+    <div id="activity-add-wrapper">
+      <label for="activity-name">Activity Name:</label>
+      <input type="text" placeholder="i.e. Cool Kid's Club" name="activity-name" id="activity-name">
+      <label for="activity-id">Veracross ID:</label>
+      <input type="text" placeholder="i.e. MATH:3900" name="activity-id" id="activity-id">
+      <label for="total-spots">Maximum participants:</label>
+      <input type="number" placeholder="i.e. 15" name="total-spots" id="total-spots">
+      Allowed Grades:<br>
+      <label for="5">5th</label>
+      <input checked type="checkbox" name="5" id="5">
+      <label for="6">6th</label>
+      <input checked type="checkbox" name="6" id="6">
+      <br>
+      <label for="7">7th</label>
+      <input checked type="checkbox" name="7" id="7">
+      <label for="8">8th</label>
+      <input checked type="checkbox" name="8" id="8"><br>
+      <button id="activity-submit">Submit Activity</button>
+    </div>
+  ` + document.getElementById('sidebar').innerHTML;
+  document.getElementById('activity-add').style.display = 'none';
   document.getElementById('activity-submit').addEventListener('click', handleAddActivity, false);
 }
 
@@ -238,7 +247,9 @@ function handleAddActivity() {
       getActivities(true).then((a) => {
         activityList = a;
         drawAdmin();
-        makePopup(`Successfully created ${activityName}!`);
+        document.getElementById('activity-add').style.display = 'none';
+        document.getElementById('activity-add-wrapper').remove();
+        makeToast(`Successfully created ${activityName}!`);
       });
     } else {
       makePopup('An error occurred: Code ' + code);
@@ -263,7 +274,7 @@ function deleteActivity(id) {
       getActivities(true).then((a) => {
         activityList = a;
         drawAdmin();
-        makePopup(`Successfully deleted ${id}.`);
+        makeToast(`Successfully deleted ${id}.`);
       });
     } else {
       makePopup('An error occurred: Code ' + code);
@@ -400,4 +411,15 @@ function makePopup(message, showCancel, confirmAction) {
   }
   document.getElementById('popup-ok').setAttribute('onclick', `document.getElementById('popup').style.display = 'none';${confirmAction}`);
   popup.style.display = 'block';
+}
+
+function makeToast(message) {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = `${message}<button onclick="hideToast()">Ok</button>`;
+  setTimeout(hideToast, 5000);
+  toast.style.display = 'block';
+}
+
+function hideToast() {
+  document.getElementById('toast').style.display = 'none';
 }
