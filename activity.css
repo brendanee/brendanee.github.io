@@ -231,13 +231,9 @@ button:hover {
 }
 
 .admin-choice-name {
+  width: calc(100% - 25px);
   font-family: Montserrat, sans-serif;
   font-size: 24px;
-  max-width: 300px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .admin-choice-id {
@@ -260,6 +256,17 @@ button:hover {
   float: right;
   width: 15px;
   color: var(--blue);
+}
+
+.admin-choice-student{
+  width: calc(100% - 25px);
+}
+
+.admin-choice-more {
+  float: right;
+  background-color: white;
+  border: 2px solid var(--green);
+  color: var(--green);
 }
 
 #popup {
@@ -318,4 +325,10 @@ input[type="checkbox"] {
   accent-color: var(--green);
   height: 20px;
   width: 20px;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

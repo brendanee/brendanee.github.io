@@ -1,9 +1,10 @@
+const backendURL = 'aitoolft.com';
+const studentDiv = document.getElementById('student');
+const adminDiv = document.getElementById('admin');
+
 // Filled by functions
 let activityList = [];
 let myGrade;
-
-const studentDiv = document.getElementById('student');
-const adminDiv = document.getElementById('admin');
 
 // Needed as loginCallback, which Google calls, needs to be a global function or something idk
 window.loginCallback = loginCallback;
@@ -11,7 +12,7 @@ window.loginCallback = loginCallback;
 // On startup, if user has a token in localStorage
 if (localStorage.getItem('JWTToken') !== null) {
   // Check token for validity
-  fetch('https://aitoolft.com/api/auth/validate', {
+  fetch(`https://${backendURL}/api/auth/validate`, {
     method: 'GET',
     headers: {'Authorization': "Bearer " + localStorage.getItem('JWTToken')},
   })
@@ -112,7 +113,7 @@ function studentSubmit() {
   .sort((a, b) => a.rank - b.rank)
   .forEach((e) => {object.electives.push(e.id);});
 
-  fetch('https://aitoolft.com/api/students/submit', {
+  fetch(`https://${backendURL}/api/students/submit`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
     body: JSON.stringify(object),
@@ -152,14 +153,14 @@ async function drawAdmin() {
     ele.className = 'admin-choice';
     ele.innerHTML = `
       <div class="admin-choice-grade">${formattedGrade}</div>
-      <span class="admin-choice-name">${e.name}</span>
-      <br>
+      <div class="admin-choice-name truncate">${e.name}</div>
       <span class="admin-choice-id">${e.id}</span>
       <br>
-      ${e.limit - e.students.length} spots left, ${e.students.length} signed up (max ${e.limit})
-      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
+      ${e.limit - e.students.length === 0 ? '<b>ACTIVITY FULL</b>' : e.limit - e.students.length + ' spots left' +  e.students.length + 'signed up (max ' + e.limit + ')'}
+      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone.', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
       <br>
-      <div class="studentList">${e.students.join('<br>')}</div>`;
+      <div class="admin-choice-student truncate">Signed up: ${e.students.length === 0 ? '<i>None</i>' : e.students.join(', ')}</div>
+      <button class="admin-choice-more">More</button>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
   document.getElementById('activity-add').addEventListener('click', showAddActivity, false);
@@ -225,7 +226,7 @@ function handleAddActivity() {
     limit: limit,
   }
   
-  fetch('https://aitoolft.com/api/admin/elective/add', {
+  fetch(`https://${backendURL}/api/admin/elective/add`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
     body: JSON.stringify(object),
@@ -251,7 +252,7 @@ function handleAddActivity() {
  * @param {String} id The ID of the activity to be deleted
  */
 function deleteActivity(id) {
-  fetch('https://aitoolft.com/api/admin/elective/delete', {
+  fetch(`https://${backendURL}/api/admin/elective/delete`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
     body: JSON.stringify({'id': id}),
@@ -280,7 +281,7 @@ function loginCallback(response) {
   // Saving name to localStorage - untrusted
   localStorage.setItem('name', decodeJwtResponse(decoded).name);
   // Send token to backend
-  fetch('https://aitoolft.com/api/login', {
+  fetch(`https://${backendURL}/api/login`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({token: decoded})
@@ -329,7 +330,7 @@ async function handleLogin(jwt) {
  * @returns The user's grade, as a number. Default is 6 
  */
 async function getGrade(email) {
-  return fetch(`https://aitoolft.com/api/students/info?email=${email}`, {method: 'GET'}) 
+  return fetch(`https://${backendURL}/api/students/info?email=${email}`, {method: 'GET'}) 
   .then(res => {
     if (res.status === 404) {
       console.warn("No grade found, using test grade of 6th. Failed email: " + email);
@@ -347,7 +348,7 @@ async function getGrade(email) {
  * @returns An array of objects, each w/ info about an activity
  */
 async function getActivities(isAdmin) {
-  return fetch(`https://aitoolft.com/api/${isAdmin ? 'admin' : 'students'}/elective/getall`, {
+  return fetch(`https://${backendURL}/api/${isAdmin ? 'admin' : 'students'}/elective/getall`, {
     method: 'GET',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
   })
