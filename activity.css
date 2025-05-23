@@ -177,7 +177,7 @@ img {
   padding: 10px;
 }
 
-.admin h1, .admin p, #admin-activity-wrapper {
+.admin h1, #admin-activity-wrapper {
   width: calc(100vw - 300px - 10px);
 }
 
@@ -371,13 +371,15 @@ border: 2px solid var(--green);
   height: 30px;
   line-height: 30px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 3px solid var(--blue);
-  padding: 0;
+  padding: 0 5px;
   box-shadow: var(--blue) 0 0 25px -10px;
 }
 
 #toast > button {
+  position: relative;
+  right: -5px;
   float: right;
   background-color: var(--blue);
   border-radius: 0;

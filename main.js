@@ -163,10 +163,10 @@ async function drawAdmin() {
       <div class="admin-choice-name truncate">${e.name}</div>
       <span class="admin-choice-id">${e.id}</span>
       <br>
-      ${e.limit - e.students.length === 0 ? '<b>ACTIVITY FULL</b>' : e.limit - e.students.length + ' spots left' +  e.students.length + 'signed up (max ' + e.limit + ')'}
+      <p>${e.interested.length} interested, maximum students ${e.limit}</p>
       <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone.', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
       <br>
-      <div class="admin-choice-student truncate">Signed up: ${e.students.length === 0 ? '<i>None</i>' : e.students.join(', ')}</div>
+      <div class="admin-choice-student truncate">Interested: ${e.interested.length === 0 ? '<i>None</i>' : e.interested.join(', ')}</div>
       <button class="admin-choice-more">More</button>`;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
@@ -264,10 +264,9 @@ function handleAddActivity() {
  * @param {String} id The ID of the activity to be deleted
  */
 function deleteActivity(id) {
-  fetch(`https://${backendURL}/api/admin/elective/delete`, {
-    method: 'POST',
+  fetch(`https://${backendURL}/api/admin/elective/${id}`, {
+    method: 'DELETE',
     headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
-    body: JSON.stringify({'id': id}),
   })
   .then(res => res.status)
   .then(code => {
@@ -287,12 +286,13 @@ function deleteActivity(id) {
  * Draws the sorted students interface. Called on button press on admin side
  */
 function drawSort() {
+  document.getElementById('sort')?.remove();
+
   let ele = document.createElement('div');
   ele.id = 'sort';
   ele.innerHTML = `
     <header>
       <button onclick="loadSort(true)">Sort Students</button>
-      <button onclick="loadSort(false)">Load Example Data</button>
       <button onclick="alert('don\'t worry, I have silly idea for this');">Export Image</button>
       <button onclick="alert('get csv or whatrever, still working on it');">Export CSV</button>
       <button onclick="document.getElementById('sort').remove();">Close</button>
@@ -301,19 +301,42 @@ function drawSort() {
     <div id="sort-wrapper"></div>
   `;
   adminDiv.append(ele);
+
+  activityList.forEach((e) => {
+    e.students = e.students.map((e2) => `<div draggable="true" ondragstart="handleDragStart(event)" class="sort-student">${e2}</div>`);
+
+    let ele = document.createElement('div');
+    ele.className = 'sort-activity';
+    ele.addEventListener('drop', (ev) => handleDragDrop(ev), false);
+    ele.addEventListener('dragover', (ev) => handleDragOver(ev), false);
+    ele.addEventListener('dragenter', (ev) => handleDragEnter(ev), false);
+    ele.addEventListener('drageleave', (ev) => handleDragLeave(ev), false);
+    ele.innerHTML = `
+      <div class="admin-choice-name truncate">${e.name}</div>
+      ${e.students.length === 0 ? '<i>None</i>' : e.students.join('')}`;
+    document.getElementById('sort-wrapper').append(ele);
+  });
 }
 
 /**
  * Finds data somewhere, parses it into the drag and drop we know and love
- * @param {Boolean} fromServer Whether to call server or use example data
  */
-function loadSort(fromServer) {
-  let data = []
-  if (fromServer) {
-    loadSort(false);
-    return;
-  } else {
-    data = [
+async function loadSort() {
+  let sortCode = await fetch(`https://${backendURL}/api/admin/elective/compute`, {
+    method: 'POST',
+    headers: {'Authorization': `Bearer ${localStorage.getItem('JWTToken')}`},
+  })
+  .then(res => (res.status))
+  .catch((e) => {makePopup(`Getting sorted list failed, error code ${e}.`);})
+  
+  if (sortCode === 200) {
+    activityList = await getActivities(true);
+    drawSort();
+  }
+}
+
+function testSort() {
+  activityList = [
       {
         name: 'Activity One',
         grades: [5, 6, 7, 8],
@@ -330,30 +353,45 @@ function loadSort(fromServer) {
         students: ['Random Person', 'Subsquent To-The', 'Events U-Have', 'Just Witnessed'],
       },
     ];
-  }
-
-  data.forEach((e) => {
-    e.students = e.students.map((e2) => `<div draggable="true" ondragstart="handleDrag(event)" class="sort-student">${e2}</div>`);
-
-    let ele = document.createElement('div');
-    ele.className = 'sort-activity';
-    ele.innerHTML = `
-      <div class="admin-choice-name truncate">${e.name}</div>
-      ${e.students.length === 0 ? '<i>None</i>' : e.students.join('')}`;
-    ele.setAttribute('ondragover', (event) => {console.log('hi'); event.preventDefault; event.dataTransfer.dropEffect = "move";});
-    ele.setAttribute('ondrop', (event) => {
-      event.preventDefault();
-      const data = event.dataTransfer.getData("text/html");
-      event.target.appendChild(data);
-    });
-    document.getElementById('sort-wrapper').append(ele);
-  });
+    drawSort();
 }
 
-function handleDrag(event) {
-  event.dataTransfer.setData("text/html", event.target.outerHTML);
-  event.dataTransfer.dropEffect = "move";
-  console.log('hi')
+let currentDragged = null;
+function handleDragStart(event) {
+  currentDragged = event.target;
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+}
+
+function handleDragEnter(event) {
+  let node;
+  if (event.target.className === 'sort-student') {
+    node = event.target.parentNode;
+  } else {
+    node = event.target;
+  }
+  node.style.borderColor = 'var(--light-green);';
+}
+
+function handleDragLeave(event) {
+  let node;
+  if (event.target.className === 'sort-student') {
+    node = event.target.parentNode;
+  } else {
+    node = event.target;
+  }
+  node.style.borderColor = 'var(--green);';
+}
+
+function handleDragDrop(event) {
+  event.preventDefault();
+  if (event.target.className === 'sort-student') {
+    event.target.parentNode.appendChild(currentDragged);
+  } else {
+    event.target.appendChild(currentDragged);
+  }
 }
 
 function calculateFull(activityID) {
