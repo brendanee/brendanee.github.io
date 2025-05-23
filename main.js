@@ -143,6 +143,7 @@ async function drawAdmin() {
       <button id="activity-add"><b>+</b> Add Activity</button>
       <button onclick="drawStudent(true)" id="view-student">View Student Interface</button>
       <button onclick="makePopup('All about this little piece of code! Will be expanded later, and include links and resources for at some point, and a link to relavent Google Sheets/stuff');" id="admin-about">About</button>
+      <button onclick="drawSort()" id="draw-sort">View Activity Assignments</button>
     </div>`;
   studentDiv.innerHTML = "";
   document.querySelector('html').className = 'admin';
@@ -280,6 +281,83 @@ function deleteActivity(id) {
       makePopup('An error occurred: Code ' + code);
     }
   });
+}
+
+/**
+ * Draws the sorted students interface. Called on button press on admin side
+ */
+function drawSort() {
+  let ele = document.createElement('div');
+  ele.id = 'sort';
+  ele.innerHTML = `
+    <header>
+      <button onclick="loadSort(true)">Sort Students</button>
+      <button onclick="loadSort(false)">Load Example Data</button>
+      <button onclick="alert('don\'t worry, I have silly idea for this');">Export Image</button>
+      <button onclick="alert('get csv or whatrever, still working on it');">Export CSV</button>
+      <button onclick="document.getElementById('sort').remove();">Close</button>
+    </header>
+    <p id="sort-tagline">Students storted into various elective, based on grade priority and preference. Drag any name to move the student. Note that re-sorting with new student responses will rmeove all manual changes</p>
+    <div id="sort-wrapper"></div>
+  `;
+  adminDiv.append(ele);
+}
+
+/**
+ * Finds data somewhere, parses it into the drag and drop we know and love
+ * @param {Boolean} fromServer Whether to call server or use example data
+ */
+function loadSort(fromServer) {
+  let data = []
+  if (fromServer) {
+    loadSort(false);
+    return;
+  } else {
+    data = [
+      {
+        name: 'Activity One',
+        grades: [5, 6, 7, 8],
+        students: ['John Doe', 'Janes Doe', 'Brendan Ee', 'Silly Kid'],
+      },
+      {
+        name: 'Activity Two',
+        grades: [7, 8],
+        students: ['Someone Else', 'Another Person', 'Fake Data', 'Funny Story'],
+      },
+      {
+        name: 'Activity Three',
+        grades: [5, 6, 7, 8],
+        students: ['Random Person', 'Subsquent To-The', 'Events U-Have', 'Just Witnessed'],
+      },
+    ];
+  }
+
+  data.forEach((e) => {
+    e.students = e.students.map((e2) => `<div draggable="true" ondragstart="handleDrag(event)" class="sort-student">${e2}</div>`);
+
+    let ele = document.createElement('div');
+    ele.className = 'sort-activity';
+    ele.innerHTML = `
+      <div class="admin-choice-name truncate">${e.name}</div>
+      ${e.students.length === 0 ? '<i>None</i>' : e.students.join('')}`;
+    ele.setAttribute('ondragover', (event) => {console.log('hi'); event.preventDefault; event.dataTransfer.dropEffect = "move";});
+    ele.setAttribute('ondrop', (event) => {
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text/html");
+      event.target.appendChild(data);
+    });
+    document.getElementById('sort-wrapper').append(ele);
+  });
+}
+
+function handleDrag(event) {
+  event.dataTransfer.setData("text/html", event.target.outerHTML);
+  event.dataTransfer.dropEffect = "move";
+  console.log('hi')
+}
+
+function calculateFull(activityID) {
+
 }
 
 /**
