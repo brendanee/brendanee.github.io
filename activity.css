@@ -313,7 +313,7 @@ border: 2px solid var(--green);
   padding: 10px;
   cursor: pointer;
   position: relative;
-
+  user-select: none;
 }
 
 .sort-student::after {
@@ -324,6 +324,16 @@ border: 2px solid var(--green);
   right: 0;
   font-size: 28px;
 }
+
+.sort-activity > i {
+  margin-top: 5px;
+  display: none;
+}
+
+.sort-activity > i:last-child {
+  display: block;
+}
+
 
 #popup {
   display: none;

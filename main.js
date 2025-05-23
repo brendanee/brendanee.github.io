@@ -313,7 +313,7 @@ function drawSort() {
     ele.addEventListener('drageleave', (ev) => handleDragLeave(ev), false);
     ele.innerHTML = `
       <div class="admin-choice-name truncate">${e.name}</div>
-      ${e.students.length === 0 ? '<i>None</i>' : e.students.join('')}`;
+      <i>None</i>${e.students.join('')}`;
     document.getElementById('sort-wrapper').append(ele);
   });
 }
@@ -367,31 +367,33 @@ function handleDragOver(event) {
 
 function handleDragEnter(event) {
   let node;
-  if (event.target.className === 'sort-student') {
+  if (event.target.className !== 'sort-activity') {
     node = event.target.parentNode;
   } else {
     node = event.target;
   }
-  node.style.borderColor = 'var(--light-green);';
 }
 
 function handleDragLeave(event) {
   let node;
-  if (event.target.className === 'sort-student') {
+  if (event.target.className !== 'sort-activity') {
     node = event.target.parentNode;
   } else {
     node = event.target;
   }
-  node.style.borderColor = 'var(--green);';
 }
 
 function handleDragDrop(event) {
   event.preventDefault();
-  if (event.target.className === 'sort-student') {
-    event.target.parentNode.appendChild(currentDragged);
+  let node;
+  if (event.target.className !== 'sort-activity') {
+    node = event.target.parentNode;
   } else {
-    event.target.appendChild(currentDragged);
+    node = event.target;
   }
+  node.appendChild(currentDragged);
+  
+  console.log(`network request: moving ${currentDragged.innerHTML} to activity named ${node.childNodes[1].innerHTML}`);
 }
 
 function calculateFull(activityID) {
@@ -415,7 +417,6 @@ function loginCallback(response) {
   })
   .then(res => res.json())
   .then(data => {
-    console.log(`Login success, token from server ${data.token}`);
     localStorage.setItem('JWTToken', data.token);
     // On message back from server, run log in client side
     handleLogin(data.token);
