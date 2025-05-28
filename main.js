@@ -60,12 +60,12 @@ async function drawStudent(refreshActivity) {
 
     let ele = document.createElement('div');
     if (e.grade.includes(myGrade) && 0 !== e.limit) {
-      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank">${e.rank === null ? "" : e.rank}</div>${e.name}<br>${wordGrade}<br>Max ${e.limit}`;
       ele.className = e.rank === null ? "isNotRanked" : "isRanked";
       ele.addEventListener('click', () => setRank(i), false);
       document.getElementById('student-wrapper').prepend(ele);
     } else {
-      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>${e.limit - e.count} spot${e.limit - e.count === 1 ? "" : "s"} left`;
+      ele.innerHTML = `<div class="rank"></div>${e.name}<br>${wordGrade}<br>Max ${e.limit}`;
       ele.className = 'cannotSelect';
       document.getElementById('student-wrapper').append(ele);
     }
@@ -151,23 +151,21 @@ async function drawAdmin() {
   activityList.forEach((e) => {
     let formattedGrade = "";
     if (e.grade.length === 2){
-      formattedGrade = e.grade[0] + "<br>&<br>" + e.grade[1];
+      formattedGrade = e.grade[0] + " & " + e.grade[1];
     } else {
-      formattedGrade = e.grade.join("<br>");
+      formattedGrade = e.grade.join(" ");
     }
 
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
     ele.innerHTML = `
-      <div class="admin-choice-grade">${formattedGrade}</div>
+      
+      <div class="admin-choice-grade">${formattedGrade}<br><button class="admin-choice-more">More</button></div>
       <div class="admin-choice-name truncate">${e.name}</div>
-      <span class="admin-choice-id">${e.id}</span>
-      <br>
-      <p>${e.interested.length} interested, maximum students ${e.limit}</p>
-      <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone.', true, 'deleteActivity(\`${e.id}\`)');">Delete</span>
-      <br>
-      <div class="admin-choice-student truncate">Interested: ${e.interested.length === 0 ? '<i>None</i>' : e.interested.join(', ')}</div>
-      <button class="admin-choice-more">More</button>`;
+      <div class="admin-choice-id">${e.id}</div>
+      <div>${e.interested.length} interested, maximum students ${e.limit}</div>
+      <div class="admin-choice-student truncate">Interested: ${e.interested.length === 0 ? '<i>None</i>' : e.interested.join(', ')} <span class="admin-choice-delete" onclick="makePopup('Are you sure want to delete ${e.name}? This action cannot be undone.', true, 'deleteActivity(\`${e.id}\`)');">Delete</span></div> 
+      `;
     document.getElementById('admin-activity-wrapper').append(ele);
   });
   document.getElementById('activity-add').addEventListener('click', showAddActivity, false);
@@ -303,7 +301,7 @@ function drawSort() {
   adminDiv.append(ele);
 
   activityList.forEach((e) => {
-    e.students = e.students.map((e2) => `<div draggable="true" ondragstart="handleDragStart(event)" class="sort-student">${e2}</div>`);
+    e.studentFormatted = e.students.map((e2) => `<div draggable="true" ondragstart="handleDragStart(event)" class="sort-student">${e2}</div>`);
 
     let ele = document.createElement('div');
     ele.className = 'sort-activity';
@@ -313,7 +311,7 @@ function drawSort() {
     ele.addEventListener('drageleave', (ev) => handleDragLeave(ev), false);
     ele.innerHTML = `
       <div class="admin-choice-name truncate">${e.name}</div>
-      <i>None</i>${e.students.join('')}`;
+      <i>None</i>${e.studentFormatted.join('')}`;
     document.getElementById('sort-wrapper').append(ele);
   });
 }
