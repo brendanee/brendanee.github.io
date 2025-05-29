@@ -149,18 +149,11 @@ async function drawAdmin() {
   document.querySelector('html').className = 'admin';
 
   activityList.forEach((e) => {
-    let formattedGrade = "";
-    if (e.grade.length === 2){
-      formattedGrade = e.grade[0] + " & " + e.grade[1];
-    } else {
-      formattedGrade = e.grade.join(" ");
-    }
-
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
     ele.innerHTML = `
       
-      <div class="admin-choice-grade">${formattedGrade}<br><button class="admin-choice-more">More</button></div>
+      <div class="admin-choice-grade">${e.grade.join(" ")}<br><button class="admin-choice-more">More</button></div>
       <div class="admin-choice-name truncate">${e.name}</div>
       <div class="admin-choice-id">${e.id}</div>
       <div>${e.interested.length} interested, maximum students ${e.limit}</div>
@@ -173,7 +166,7 @@ async function drawAdmin() {
 }
 
 /**
- * Called when Add Activity button's clicked, literally adds the HTML for the form to the sidebar
+ * Called when the Add Activity button is clicked, literally adds the HTML for the form to the sidebar
  */
 function showAddActivity() {
   document.getElementById('sidebar').innerHTML = `
@@ -290,10 +283,9 @@ function drawSort() {
   ele.id = 'sort';
   ele.innerHTML = `
     <header>
-      <button onclick="loadSort(true)">Sort Students</button>
-      <button onclick="alert('don\'t worry, I have silly idea for this');">Export Image</button>
+      <button style="background-color: var(--pink);" onclick="loadSort(true)">Sort Students</button>
       <button onclick="alert('get csv or whatrever, still working on it');">Export CSV</button>
-      <button onclick="document.getElementById('sort').remove();">Close</button>
+      <button style="background-color: var(--green);" onclick="document.getElementById('sort').remove();">Close</button>
     </header>
     <p id="sort-tagline">Students storted into various elective, based on grade priority and preference. Drag any name to move the student. Note that re-sorting with new student responses will rmeove all manual changes</p>
     <div id="sort-wrapper"></div>
@@ -310,7 +302,8 @@ function drawSort() {
     ele.addEventListener('dragenter', (ev) => handleDragEnter(ev), false);
     ele.addEventListener('drageleave', (ev) => handleDragLeave(ev), false);
     ele.innerHTML = `
-      <div class="admin-choice-name truncate">${e.name}</div>
+      <div class="admin-sort-name truncate">${e.name}</div>
+      <div class="admin-choice-id">${e.id} | ${e.limit === e.students.length ? '<span style="color: var(--orange)">Full</span>' : e.students.length + '/' + e.limit}</div>
       <i>None</i>${e.studentFormatted.join('')}`;
     document.getElementById('sort-wrapper').append(ele);
   });
@@ -337,26 +330,34 @@ function testSort() {
   activityList = [
       {
         name: 'Activity One',
+        id: 'TEST-01',
         grades: [5, 6, 7, 8],
         students: ['John Doe', 'Janes Doe', 'Brendan Ee', 'Silly Kid'],
+        limit: 4,
       },
       {
         name: 'Activity Two',
+        id: 'TEST-02',
         grades: [7, 8],
         students: ['Someone Else', 'Another Person', 'Fake Data', 'Funny Story'],
+        limit: 8,
       },
       {
         name: 'Activity Three',
+        id: 'TEST-03',
         grades: [5, 6, 7, 8],
         students: ['Random Person', 'Subsquent To-The', 'Events U-Have', 'Just Witnessed'],
+        limit: 999,
       },
     ];
     drawSort();
 }
 
 let currentDragged = null;
+let currentDraggedParent = null;
 function handleDragStart(event) {
   currentDragged = event.target;
+  currentDraggedParent = currentDragged.parentNode.childNodes[1].innerHTML;
 }
 
 function handleDragOver(event) {
@@ -389,10 +390,22 @@ function handleDragDrop(event) {
   } else {
     node = event.target;
   }
-  node.appendChild(currentDragged);
+  let dropAttempt = activityNamed(node.childNodes[1].innerHTML);
+  if (dropAttempt.students.length === dropAttempt.limit) {
+    return;
+  }
+  dropAttempt.students.push(currentDragged.innerHTML);
+  activityNamed(currentDraggedParent).students.splice(activityNamed(currentDraggedParent).students.indexOf(currentDragged.innerHTML), 1)
+  //node.appendChild(currentDragged);
   
-  console.log(`network request: moving ${currentDragged.innerHTML} to activity named ${node.childNodes[1].innerHTML}`);
+  console.log(`Network Request: Move student ${currentDragged.innerHTML} from ${currentDraggedParent} to ${node.childNodes[1].innerHTML}.`);
+  drawSort();
 }
+
+function activityNamed(name) {
+  return activityList.find((e) => (e.name === name));
+}
+
 
 function calculateFull(activityID) {
 
