@@ -295,11 +295,11 @@ function drawSort() {
     e.studentFormatted = e.students.map((e2) => `<div draggable="true" ondragstart="handleDragStart(event)" class="sort-student">${e2}</div>`);
 
     let ele = document.createElement('div');
-    ele.className = 'sort-activity';
+    ele.className = `sort-activity ${e.students.length === e.limit ? 'admin-choice-full' : 'admin-choice-open'}`;
     ele.addEventListener('drop', (ev) => handleDragDrop(ev), false);
     ele.addEventListener('dragover', (ev) => handleDragOver(ev), false);
     ele.addEventListener('dragenter', (ev) => handleDragEnter(ev), false);
-    ele.addEventListener('drageleave', (ev) => handleDragLeave(ev), false);
+    ele.addEventListener('dragleave', (ev) => handleDragLeave(ev), false);
     ele.innerHTML = `
       <div class="admin-sort-name truncate">${e.name}</div>
       <div class="admin-choice-id">${e.id} | ${e.limit === e.students.length ? '<span style="color: var(--orange)">Full</span>' : e.students.length + '/' + e.limit}</div>
@@ -364,27 +364,22 @@ function handleDragOver(event) {
 }
 
 function handleDragEnter(event) {
-  let node;
-  if (event.target.className !== 'sort-activity') {
-    node = event.target.parentNode;
-  } else {
-    node = event.target;
+  if (event.target.className.includes('sort-activity')) {
+    event.target.id = 'choice-hover';
   }
 }
 
 function handleDragLeave(event) {
-  let node;
-  if (event.target.className !== 'sort-activity') {
-    node = event.target.parentNode;
-  } else {
-    node = event.target;
+  if (event.target.className.includes('sort-activity')) {
+    event.target.id = '';
   }
 }
 
 function handleDragDrop(event) {
   event.preventDefault();
+  document.getElementById('choice-hover').id = '';
   let node;
-  if (event.target.className !== 'sort-activity') {
+  if (!event.target.className.includes('sort-activity')) {
     node = event.target.parentNode;
   } else {
     node = event.target;
