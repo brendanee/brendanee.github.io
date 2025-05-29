@@ -139,7 +139,7 @@ async function drawAdmin() {
 
   adminDiv.innerHTML =  `
     <div id="admin-activity-wrapper"></div>
-    <div id="sidebar">
+    <div class="sidebar">
       <button id="activity-add"><b>+</b> Add Activity</button>
       <button onclick="drawStudent(true)" id="view-student">View Student Interface</button>
       <button onclick="makePopup('All about this little piece of code! Will be expanded later, and include links and resources for at some point, and a link to relavent Google Sheets/stuff');" id="admin-about">About</button>
@@ -152,8 +152,7 @@ async function drawAdmin() {
     let ele = document.createElement('div');
     ele.className = 'admin-choice';
     ele.innerHTML = `
-      
-      <div class="admin-choice-grade">${e.grade.join(" ")}<br><button class="admin-choice-more">More</button></div>
+      <div class="admin-choice-grade">${e.grade.join(" ")}<br><button onclick="expandActivity('${e.name}')" class="admin-choice-more">More</button></div>
       <div class="admin-choice-name truncate">${e.name}</div>
       <div class="admin-choice-id">${e.id}</div>
       <div>${e.interested.length} interested, maximum students ${e.limit}</div>
@@ -406,11 +405,6 @@ function activityNamed(name) {
   return activityList.find((e) => (e.name === name));
 }
 
-
-function calculateFull(activityID) {
-
-}
-
 /**
  * After Google login flow, google callback. This function is made global.
  * @param {Object} response Response object from server with smaller JWT and other stuff
@@ -550,4 +544,20 @@ function makeToast(message) {
 
 function hideToast() {
   document.getElementById('toast').style.display = 'none';
+}
+
+function expandActivity(name) {
+  // Remove old expanded sidebar, if one exists
+  document.querySelectorAll('.sidebar')[1]?.remove();
+  let activity = activityNamed(name);
+
+  let ele = document.createElement('div');
+  ele.className = 'sidebar';
+  ele.innerHTML = `<div class="admin-sort-name">${activity.name}</div>
+  ID: ${activity.id}<br>
+  Spots: ${activity.limit}<br>
+  Interested Students:<br>${activity.interested.join('<br>')}
+  `;
+
+  adminDiv.appendChild(ele);
 }

@@ -166,7 +166,7 @@ img {
   padding: 5px;
 }
 
-#sidebar {
+.sidebar {
   height: calc(100vh - 53px);
   width: 260px;
   background-color: #ddd;
@@ -210,7 +210,7 @@ button:hover {
   text-decoration-thickness: 1px;
 }
 
-#sidebar button {
+.sidebar button {
   margin: 5px;
   width: 200px;
 }
@@ -270,7 +270,7 @@ button:hover {
 }
 
 .admin-choice-more {
-  margin-top: 5px;
+  margin-top: 30px;
   background-color: white;
   border: 2px solid var(--green);
   color: var(--green);
