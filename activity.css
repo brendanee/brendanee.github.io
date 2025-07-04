@@ -427,19 +427,21 @@ input[type="checkbox"] {
 .admin-choice-open#choice-hover::after {
   content: "+ Add Here";
   color: var(--blue);
+  border: 2px dashed currentColor;
 }
 
 .admin-choice-full#choice-hover::after {
   content: "Activity Full";
   color: var(--orange);
+  border: 2px solid currentColor;
 }
 
 #choice-hover::after {
   display: block;
+  border-radius: 5px;
   color: white;
   width: calc(100% - 20px);
   padding: 10px;
-  border: 2px dashed currentColor;
 }
 
 #choice-hover > * {
