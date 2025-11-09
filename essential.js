@@ -4,7 +4,7 @@ headerNode.innerHTML =
 <div id="shadow-cover"></div>
 <a href="/lego">LEGO</a>
 <a href="/coding">Coding</a>
-<a id="flower" href="./"><img src="/assets/flower.webp" alt="Bright pink flowers against a light-blue background"></a>
+<a id="flower" href="/"><img src="/assets/flower.webp" alt="Bright pink flowers against a light-blue background"></a>
 <a href="/photos">Photos</a>
 <a href="/design">Design</a>
 `;
