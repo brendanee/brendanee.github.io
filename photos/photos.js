@@ -7,6 +7,7 @@ function PhotoData(name, altText, dateTaken, camera) {
 }
 
 const ALL_PHOTOS = [
+  new PhotoData("Rocks & Shells", "Three white shells and a rock upon a stump", "September 19th, 2025", "Canon EOS Rebel T7"),
   new PhotoData("Photo Name", "A centered sunset over the ocean", "date", "cameraaa"),
   new PhotoData("Photo Name", "A crackling campfire at night", "date", "cameraaa"),
   new PhotoData("Photo Name", "A dreary river with foggy trees behind", "date", "cameraaa"),
@@ -41,24 +42,38 @@ const ALL_PHOTOS = [
   new PhotoData("Photo Name", "A leaf with many holes eaten in it", "date", "cameraaa"),
   new PhotoData("Photo Name", "A black and white small concrete star", "date", "cameraaa"),
   new PhotoData("Photo Name", "A yellow flower surrounded by pink leaves", "date", "cameraaa"),
+  new PhotoData("photo name", 'akt', 'date', 'camera'),
+  new PhotoData("photo name", 'akt', 'date', 'camera'),
+  new PhotoData("photo name", 'akt', 'date', 'camera'),
+  new PhotoData("photo name", 'akt', 'date', 'camera'),
+  new PhotoData("photo name", 'akt', 'date', 'camera'),
+  new PhotoData("photo name", 'akt', 'date', 'camera'),
+  new PhotoData("photo name", 'akt', 'date', 'camera')
 ];
 
-ALL_PHOTOS.forEach((e, i) => {
+ALL_PHOTOS.forEach((e, i) => e.id = i);
+
+for (let i = 0; i < ALL_PHOTOS.length; i++) {
+  const RAND = Math.floor(Math.random() * ALL_PHOTOS.length);
+  [ALL_PHOTOS[i], ALL_PHOTOS[RAND]] = [ALL_PHOTOS[RAND], ALL_PHOTOS[i]];
+}
+
+ALL_PHOTOS.forEach((e) => {
   let ele = document.createElement('img');
-  ele.src = `/assets/photos/photo${String(i).padStart(2, '0')}.webp`
+  ele.src = `/assets/lowres/photo${String(e.id).padStart(2, '0')}.webp`;
   ele.alt = e.altText;
+  ele.addEventListener('click', () => {large(e.id)}, false);
   document.getElementById('photo-wrapper').append(ele);
 })
 
-// Add eventlistener to each photo
-document.getElementById("photo-wrapper").childNodes.forEach((e) => {
-  if (e.nodeName === "IMG") {
-    e.addEventListener("click", () => {large(e)}, false);
-  }
-})
-
 // Make large img current photo, then show container
-function large(node) {
-  document.getElementById("large").src = node.src;
+function large(i) {
+  const PHOTO = ALL_PHOTOS[i];
+  document.getElementById("large-photo").src = `/assets/highres/photo${String(i).padStart(2, '0')}.webp`;
+  document.getElementById('large-info').innerHTML = `
+  <b>${PHOTO.name}</b><br>
+  <i>${PHOTO.altText}</i><br>
+  Taken ${PHOTO.dateTaken} with a ${PHOTO.camera}.
+  `;
   document.getElementById("large-wrapper").style.display = "flex";
 }

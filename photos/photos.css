@@ -38,10 +38,14 @@ h1 {
   cursor: pointer;
 }
 
-#large {
+#large-photo {
   max-width: 90%;
   max-height: 90%;
   display: block;
   margin: auto;
   user-select: none;
+}
+
+#large-info {
+  float: right;
 }
