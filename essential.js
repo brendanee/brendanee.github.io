@@ -2,20 +2,20 @@ let headerNode = document.createElement('header');
 headerNode.innerHTML =
 `
 <div id="shadow-cover"></div>
-<a href="#">Lego</a>
-<a href="https://github.com/brendanee">Code</a>
-<a id="flower" href="/"><img src="./assets/flower.webp" alt="Bright pink flowers against a light-blue background"></a>
-<a href="/photos.html">Photos</a>
-<a href="#">About</a>
+<a href="/lego">LEGO</a>
+<a href="/coding">Coding</a>
+<a id="flower" href="./"><img src="/assets/flower.webp" alt="Bright pink flowers against a light-blue background"></a>
+<a href="/photos">Photos</a>
+<a href="/design">Design</a>
 `;
 let footerNode = document.createElement('footer');
 footerNode.innerHTML =
 `
 <a href="/">Home</a>
-<a href="#">Lego</a>
-<a href="https://github.com/brendanee">Code</a>
-<a href="/photos.html">Photos</a>
-<a href="#">About</a>
+<a href="/lego">LEGO</a>
+<a href="/coding">Coding</a>
+<a href="/photos">Photos</a>
+<a href="/design">Design</a>
 <div id="copyright">Copyright © <a href="mailto:&#109;&#101;&#64;&#98;&#114;&#101;&#110;&#100;&#97;&#110;&#46;&#101;&#101;">Brendan Ee</a> 2023-2025, All Rights Reserved.</div>
 `;
 document.querySelector('body').prepend(headerNode);
