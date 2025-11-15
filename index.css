@@ -17,16 +17,11 @@
   */
 
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
-    filter: contrast(1);
   }
-  50% {
-    filter: contrast(1.5);
-  }
-  100% {
+  to {
     transform: rotate(360deg);
-    filter: contrast(1);
   }
 }
 
@@ -35,23 +30,27 @@
   border-radius: 50%;
 }
 
-main > div > img {
+main div > img {
   object-fit: cover;
   width: 100%;
   height: 100%;
   border-radius: 50%;
 }
 
+main > div {
+justify-content: center;
+display: flex;
+}
+
 .photo-wrapper {
+  margin: 20px;
   width: 200px;
   height: 200px;
   transition: all 0.1s ease-out;
 }
 
 .photo-wrapper:hover {
-  width: 250px;
-  height: 250px;
-  transform: rotate(5deg);
+  filter: brightness(110%);
   transition: all 0.1s ease-out;
 }
 
