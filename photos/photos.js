@@ -70,10 +70,15 @@ ALL_PHOTOS.forEach((e, i) => {
 function large(i, id) {
   const PHOTO = ALL_PHOTOS[id];
   document.getElementById("large-photo").src = `/assets/highres/photo${String(i).padStart(2, '0')}.webp`;
-  document.getElementById('large-info').innerHTML = `
+  let bodyText = `
   <h1>${PHOTO.name}</h1>
   <i>${PHOTO.altText}.</i><br><br>
-  Taken ${PHOTO.dateTaken}, with a(n) ${PHOTO.camera}.
-  `;
+  Taken ${PHOTO.dateTaken}, `;
+  if ("aeiou".includes(PHOTO.camera.substring(0, 1).toLowerCase())) {
+    bodyText += `with an ${PHOTO.camera}.`;
+  } else {
+    bodyText += `with a ${PHOTO.camera}.`;
+  }
+  document.getElementById('large-info').innerHTML = bodyText;
   document.getElementById("large-wrapper").style.display = "";
 }
