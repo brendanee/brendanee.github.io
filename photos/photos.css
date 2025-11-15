@@ -52,7 +52,7 @@
     border-radius: 0 25px 0 25px;
     margin: 20px auto;
     max-height: calc(100vh - 190px);
-    max-width: 100%;
+    max-width: calc(100vw - 40px);
   }
 }
 

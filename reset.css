@@ -29,9 +29,8 @@ time, mark, audio, video {
 	padding: 0;
 	border: 0;
 	font-size: 100%;
-	font-family: 'Anek Latin'; /* Use font duh */
 	vertical-align: baseline;
-  font-family: "Anek Latin", sans-serif;
+  font-family: "Anek Latin", sans-serif; /* Use font duh */
 	--orange: #ffccb5;
 	--pink: #edb1ff;
 	--blue: #b1c2ff;
