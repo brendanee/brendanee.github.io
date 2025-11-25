@@ -1,7 +1,8 @@
 @import url(./reset.css);
+@import url(./style.css);
 @import url('https://fonts.googleapis.com/css2?family=Asap:wght@600');
 
-/* Desktop and up */
+/* Header bar desktop and up */
 @media (min-width: 500px) {
   header {
     position: sticky;
@@ -136,7 +137,7 @@
   }
 }
 
-/* Mobile */
+/* Header bar mobile */
 @media (max-width: 499px) {
   header::after, header::before {
     backdrop-filter: blur(15px);
@@ -231,6 +232,7 @@
   }
 }
 
+/* Header generic styling */
 header a {
   color: light-dark(black, white);
   font-weight: 500;
@@ -288,16 +290,4 @@ footer a:hover {
   border: none;
   line-height: 1.5;
   height: auto;
-}
-
-main {
-  color: light-dark(black, white);
-  background-color: light-dark(white, var(--off-black));
-}
-
-h1 {
-  font-family: Asap, sans-serif;
-  font-size: 40px;
-  margin-bottom: 10px;
-  text-align: center;
 }

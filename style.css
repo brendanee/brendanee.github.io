@@ -1,20 +1,4 @@
-/*
-@media (min-width: 500px) {
-  #logo {
-    width: 200px;
-    margin: 40px auto 20px auto;
-    display: block;
-  }
-}
-
-@media (max-width: 499px) {
-  #logo {
-    width: 50%;
-    margin: 40px auto 40px auto;
-    display: block;
-  }
-}
-  */
+/* This is imported by essential.css */
 
 @keyframes spin {
   from {
@@ -25,21 +9,49 @@
   }
 }
 
-#logo {
-  background-color: white;
-  border-radius: 50%;
+
+/* Generic styling */
+main {
+  color: light-dark(black, white);
+  background-color: light-dark(white, var(--off-black));
 }
 
-main div > img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
+h1 {
+  font-family: Asap, sans-serif;
+  font-size: 40px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-main > div {
-justify-content: center;
-display: flex;
+h2 {
+  font-family: Asap, sans-serif;
+  font-size: 25px;
+  margin: 10px 0 20px 0;
+}
+
+p {
+  font-size: 18px;
+}
+
+a {
+  color: light-dark(var(--magenta), var(--pink));
+}
+
+a[href^="http"]::after {
+  content: "";
+  position: relative;
+  top: 3px;
+  width: 15px;
+  height: 15px;
+  padding-left: 5px;
+  background: right / contain no-repeat url(/assets/external.svg);
+  display: inline-block;
+}
+
+/* All photo related stuff- for main page (photos page has own css file) */
+main > div:has(.photo-wrapper) {
+  justify-content: center;
+  display: flex;
 }
 
 .photo-wrapper {
@@ -66,6 +78,37 @@ display: flex;
 }
 
 .photo-wrapper:hover::after {
-  animation: spin infinite 1s linear;
+  animation: spin infinite 3s linear;
 }
 
+.photo-wrapper > img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: white; /* for transparent images in dark mode */
+  border-radius: 50%;
+}
+
+/* Used on all project pages (lego, coding, etc.) */
+#project-wrapper {
+  justify-content: center; /* No clue why align-items doesn't work */
+  margin: auto;
+  max-width: 600px;
+  @media (min-width: 1000px) {
+    max-width: 1000px;
+    columns: 2;
+  }
+  
+}
+
+#project-wrapper > div {
+  display:inline-block;
+  width: calc(100% - 20px - 8px);
+  margin: 10px 0;
+  padding: 10px;
+  border: 4px solid transparent;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffffffaa, #ffffff60) padding-box, var(--gradient-light) padding-box, var(--gradient-dark) border-box;
+  box-shadow: 0 0 25px 0 light-dark(var(--pink), var(--magenta));
+}
