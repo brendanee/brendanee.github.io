@@ -1,9 +1,9 @@
+sitemap: https://brendan.ee/sitemap.txt
+
 # I, for one, am hesitant in welcoming our new AI overlords
 User-agent: GPTBot
 Disallow: /
 
-# Don't allow acess to 404 page or my random code stuff
+# Don't allow acess to 404 page
 User-agent: *
 Disallow: /404.html
-Disallow: /code
-Disallow: /code/
