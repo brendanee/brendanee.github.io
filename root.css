@@ -1,0 +1,50 @@
+/* Only used on root page */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+main > div:has(.photo-wrapper) {
+  justify-content: center;
+  display: flex;
+}
+
+.photo-wrapper {
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+  transition: all 0.1s ease-out;
+}
+
+.photo-wrapper:hover {
+  filter: brightness(110%);
+  transition: all 0.1s ease-out;
+}
+
+.photo-wrapper::after {
+  content: "";
+  top: -100%;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url(/assets/bubblering.svg);
+  background-size: cover;
+}
+
+.photo-wrapper:hover::after {
+  animation: spin infinite 3s linear;
+}
+
+.photo-wrapper > img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: white; /* for transparent images in dark mode */
+  border-radius: 50%;
+}
