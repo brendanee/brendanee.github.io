@@ -4,6 +4,7 @@
 }
 
 #photo-wrapper {
+  padding: 10px;
   max-width: 1500px;
   margin: auto;
   column-width: 400px;
@@ -18,7 +19,7 @@
   width: 100%;
   display: block;
   cursor: pointer;
-  padding: 5px;
+  padding: 5px 0;
   border-radius: 0 25px;
 }
 

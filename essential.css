@@ -33,11 +33,12 @@
   }
 
   /* Image itself */
-  header #flower img {
+  header #flower > img {
     position: relative;
     top: -5px;
     left: calc(50% - 35px); /* Halfway minus half the width of the image */
     width: 70px;
+    height: 70px;
     display: block;
     border-radius: 35px;
     outline: 5px solid light-dark(white, var(--off-black));
