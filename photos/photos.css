@@ -9,7 +9,6 @@
   margin: auto;
   column-width: 400px;
   column-gap: 10px;
-
   @media (max-width: 900px) {
     columns: 2;
   }

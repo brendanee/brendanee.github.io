@@ -245,7 +245,6 @@ header a:hover {
   color: light-dark(var(--magenta), var(--pink));
 }
 
-
 header #flower img:hover {
   filter: brightness(120%);
 }
