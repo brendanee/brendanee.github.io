@@ -51,7 +51,7 @@ h1 {
 }
 
 h2 {
-  font-size: 25px;
+  font-size: 30px;
   margin: 10px 0 20px 0;
 }
 
@@ -100,7 +100,7 @@ a[href^="http"]::after {
 }
 
 #project-wrapper > div {
-  display:inline-block;
+  display: inline-block;
   width: calc(100% - 30px - 4px);
   margin: 15px 0;
   padding: 25px;
@@ -113,4 +113,13 @@ a[href^="http"]::after {
     background: linear-gradient(135deg, #000a, #0004) padding-box, var(--gradient-dark) padding-box, var(--gradient-light) border-box;
   }
   box-shadow: 0 0 15px 0 light-dark(var(--pink), var(--magenta));
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -54,6 +54,21 @@
     z-index: 0; /* Ensure hover effect works for other links */
   } 
 
+  header #flower:hover::after {
+    content: "";
+    top: -250%;
+    /* Width of #flower minus width of ring, divide two to center */
+    left: calc(50% - 70px / 2);
+    position: relative;
+    display: block;
+    width: 70px;
+    height: 70px;
+    background-image: url(/assets/bubblering.svg);
+    background-size: cover;
+    animation: spin infinite 2s linear;
+    transform-origin: center;
+    border: none
+  }
 
   header::after {
     content: "";
@@ -246,7 +261,7 @@ header a:hover {
 }
 
 header #flower img:hover {
-  filter: brightness(120%);
+  filter: brightness(110%);
 }
 
 /* No standard hover effect */

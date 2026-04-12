@@ -1,19 +1,10 @@
-/* Only used on root page */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 main > div:has(.photo-wrapper) {
   justify-content: center;
   display: flex;
 }
 
 .photo-wrapper {
+  display: block;
   margin: 20px;
   width: 200px;
   height: 200px;
@@ -37,7 +28,7 @@ main > div:has(.photo-wrapper) {
 }
 
 .photo-wrapper:hover::after {
-  animation: spin infinite 3s linear;
+  animation: spin infinite 2s linear;
 }
 
 .photo-wrapper > img {
@@ -47,4 +38,15 @@ main > div:has(.photo-wrapper) {
   border-radius: 50%;
   background-color: white; /* for transparent images in dark mode */
   border-radius: 50%;
+}
+
+.photo-wrapper > h2 {
+  /* Position ring thingy correctly */
+  position: absolute;
+  width: 200px;
+  color: light-dark(black, white);
+}
+
+.photo-wrapper:hover > h2 {
+  color: inherit;
 }

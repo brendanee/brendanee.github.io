@@ -78,3 +78,9 @@
     height: 130px;
   }
 }
+
+#large-info > h1 {
+  @media (max-width: 999px) {
+    margin-bottom: 5px;
+  }
+}

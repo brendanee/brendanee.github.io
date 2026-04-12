@@ -78,7 +78,7 @@ function large(i, id) {
   document.getElementById("large-photo").src = `/assets/highres/photo${String(i).padStart(2, '0')}.webp`;
   let bodyText = `
   <h1>${PHOTO.name}</h1>
-  <i>${PHOTO.altText}.</i><br><br>
+  <i>${PHOTO.altText}.</i><br>
   Taken ${PHOTO.dateTaken}, `;
   if ("aeiou".includes(PHOTO.camera.substring(0, 1).toLowerCase())) {
     bodyText += `with an ${PHOTO.camera}.`;
