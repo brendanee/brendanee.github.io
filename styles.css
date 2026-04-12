@@ -38,11 +38,11 @@
 
 body {
   margin: 0;
+  background-color: light-dark(white, var(--off-black));
 }
 
 main {
   color: light-dark(black, white);
-  background-color: light-dark(white, var(--off-black));
 }
 
 h1 {
